@@ -5,10 +5,14 @@ Using DeepRL to create an AI able to play generalized versions of Power4 and Tic
 
 ## State of project : NOT STARTED
 
+UML : V0.0.1
+Doc + Test : NOT STARTED
+Code : NOT STARTED
+
 
 ## Next Step
 
-1. Creating file hierarchy for V0.0.1
+1. DocTest for V0.0.1
 
 
 ## Scheduled Versions
