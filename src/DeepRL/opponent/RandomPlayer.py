@@ -1,4 +1,4 @@
-import Opponent
+from .Opponent import Opponent
 
 class RandomPlayer(Opponent) :
     """
