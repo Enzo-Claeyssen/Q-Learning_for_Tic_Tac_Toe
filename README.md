@@ -3,11 +3,11 @@ Using DeepRL to create an AI able to play generalized versions of Power4 and Tic
 
 
 
-## State of project : NOT STARTED
+## State of project : V0.0.1
 
 - UML : V0.0.1
-- Doc + Test : NOT STARTED
-- Code : NOT STARTED
+- Doc + Test : V0.0.1
+- Code : V0.0.1
 
 
 ## Next Step
@@ -17,8 +17,13 @@ Using DeepRL to create an AI able to play generalized versions of Power4 and Tic
 
 ## Scheduled Versions
 
+### Already Done
+
 - V0.0.1
 Creating RandomPlayer and Opponent
+
+### Next versions
+
 
 - V0.0.2
 Creating Cell and Board

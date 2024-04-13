@@ -1,14 +1,10 @@
 from .Opponent import Opponent
+import random
 
 class RandomPlayer(Opponent) :
     """
     This class represents a player who plays randomly.
-    """
-    def __init__() :
-        """
-        Creates a new RandomPlayer
-        """
-        pass
+    """ 
     
     def makeAction(self, message) :
         """
@@ -18,4 +14,5 @@ class RandomPlayer(Opponent) :
         Returns :
             A random integer.
         """
-        pass
+        print(message)
+        return random.randint(1, 3)
