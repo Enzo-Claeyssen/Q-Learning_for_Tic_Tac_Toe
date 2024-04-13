@@ -4,7 +4,10 @@ import random
 class RandomPlayer(Opponent) :
     """
     This class represents a player who plays randomly.
-    """ 
+    """
+    
+    def __init__(symbole) :
+        pass
     
     def makeAction(self, message) :
         """

@@ -3,6 +3,14 @@ from abc import abstractmethod
 class Opponent() :
     """This class represents opponents playing games."""
     
+    def __init__(symbole) :
+        pass
+    
+    
+    def getSymbole() :
+        pass
+    
+    
     @abstractmethod
     def makeAction(self, message) :
         """
