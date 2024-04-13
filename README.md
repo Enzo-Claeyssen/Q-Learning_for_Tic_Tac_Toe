@@ -7,15 +7,15 @@ Using DeepRL to create an AI able to play generalized versions of Power4 and Tic
 
 #### First time use ?
 Generates doc + runs the program.
-- Use "make" command
+- Use make command
 
 #### Creating docs
 Generates doc of the project.
-- "make doc"
+- make doc
 
 #### Consulting docs
 
-- Go to doc directory and launch "src.html"
+- Go to doc directory and open src.html
 
 #### Running Program
 Use this to run the program without generating doc again.
@@ -25,7 +25,7 @@ Use this to run the program without generating doc again.
 
 ## State of project : V0.0.1
 
-- UML : V0.0.1
+- UML : V0.0.2
 - Doc + Test : V0.0.1
 - Code : V0.0.1
 
