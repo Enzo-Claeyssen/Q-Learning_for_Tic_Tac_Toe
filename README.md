@@ -2,6 +2,26 @@
 Using DeepRL to create an AI able to play generalized versions of Power4 and TicTacToe
 
 
+## How to use ?
+
+
+#### First time use ?
+Generates doc + runs the program.
+- Use "make" command
+
+#### Creating docs
+Generates doc of the project.
+- "make doc"
+
+#### Consulting docs
+
+- Go to doc directory and launch "src.html"
+
+#### Running Program
+Use this to run the program without generating doc again.
+- make run
+
+
 
 ## State of project : V0.0.1
 
