@@ -11,4 +11,10 @@ class TestCell(unittest.TestCase) :
         opp = Opponent('X')
         self.cell.setOwner(opp)
         self.assertEqual(opp, self.cell.getOwner())
-        
+    
+    def test_ownerIsNotSetWhenCellAlreadyCaptured(self) :
+        opp = Opponent('X')
+        opp2 = Opponent('O')
+        self.cell.setOwner(opp)
+        self.cell.setOwner(opp2)
+        self.assertEqual(opp, self.cell.getOwner())
