@@ -11,7 +11,7 @@ class RandomPlayer(Opponent) :
         Creates a new RandomPlayer
         :Param: symbole The symbole associated with cells captured by this opponent
         """
-        pass
+        super().__init__(symbole)
     
     def makeAction(self, message) :
         """

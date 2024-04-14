@@ -8,12 +8,12 @@ class Opponent() :
         Creates a new opponent
         :Param: symbole The symbole used to represent cells capture by this opponent
         """
-        pass
+        self.__SYMBOLE = symbole
     
     
     def getSymbole(self) :
         """ Retrieves the symbole of an opponent """
-        pass
+        return self.__SYMBOLE
     
     
     @abstractmethod

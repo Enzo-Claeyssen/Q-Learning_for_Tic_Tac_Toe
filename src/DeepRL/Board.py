@@ -1,10 +1,13 @@
+from src.DeepRL.Cell import Cell
+
 
 class Board() :
     """ Represents a board full of cells """
     
     def __init__(self) :
         """ Creates a new board with a height and width of 3 """
-        pass
+        self.__grid = [[Cell() for j in range(3)] for i in range(3)]
+    
     
     def getCell(self, x, y) :
         """
@@ -13,7 +16,8 @@ class Board() :
         :Param: y The row of the cell
         :returns: The cell at position (x, y)
         """
-        pass
+        return self.__grid[y][x]
+    
     
     def capture(self, x, y, opp) :
         """
@@ -22,7 +26,9 @@ class Board() :
         :Param: y The y position of the cell
         :Param: opp The opponent who captured the cell
         """
-        pass
+        cell = self.getCell(x, y)
+        cell.setOwner(opp)
+    
     
     def printBoard(self) :
         """
