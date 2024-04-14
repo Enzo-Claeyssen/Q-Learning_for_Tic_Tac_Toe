@@ -42,11 +42,11 @@ Use this to run the program without generating doc again.
 - V0.0.1
 Creating RandomPlayer and Opponent
 
-### Next versions
-
-
 - V0.0.2
 Creating Cell and Board
+
+### Next versions
+
 
 - V0.0.3
 Creating everything in Game but play()
