@@ -2,14 +2,13 @@
 
 FILE = src src.DeepRL src.DeepRL.Board src.DeepRL.Cell src.DeepRL.opponent src.DeepRL.opponent.Opponent src.DeepRL.opponent.RandomPlayer
 
-
+TEST_FILE = src.DeepRL.test_Cell src.DeepRL.test_Board src.DeepRL.opponent.test_RandomPlayer
 
 
 all :
 	@make doc
+	@make test
 	@make run
-
-
 
 
 doc :
@@ -18,13 +17,24 @@ doc :
 	@echo ------
 	
 	@mkdir doc
-	@pydoc3 -w $(FILE)
+	@python3 -m pydoc -w $(FILE)
 	@mv *.html doc
 	
 	@echo ------
 	@echo Doc generated
 	@echo ------
 
+
+test :
+	@echo ------
+	@echo Running Tests
+	@echo ------
+	
+	@python3 -m unittest $(TEST_FILE)
+	
+	@echo ------
+	@echo Tests finished
+	@echo ------
 
 
 
