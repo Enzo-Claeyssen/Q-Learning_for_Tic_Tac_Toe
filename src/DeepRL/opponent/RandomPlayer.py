@@ -22,4 +22,4 @@ class RandomPlayer(Opponent) :
             A random integer.
         """
         print(message)
-        return random.randint(1, 3)
+        return random.randint(0, 2)

@@ -1,4 +1,4 @@
-from src.DeepRL.Cell import Cell
+from .Cell import Cell
 
 
 class Board() :
@@ -6,7 +6,7 @@ class Board() :
     
     def __init__(self) :
         """ Creates a new board with a height and width of 3 """
-        self.__grid = [[Cell() for j in range(3)] for i in range(3)]
+        self.__grid = [[Cell() for x in range(3)] for y in range(3)]
     
     
     def getCell(self, x, y) :
@@ -34,4 +34,10 @@ class Board() :
         """
         Print the board
         """
-        pass
+        for y in range(3) :
+            print('-------')
+            toPrint = '|'
+            for x in range(3) :
+                toPrint += self.getCell(x, y).getCellRepresentation() + '|'
+            print(toPrint)
+        print('-------')

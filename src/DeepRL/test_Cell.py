@@ -18,3 +18,7 @@ class TestCell(unittest.TestCase) :
         self.cell.setOwner(opp)
         self.cell.setOwner(opp2)
         self.assertEqual(opp, self.cell.getOwner())
+
+
+if __name__ == '__main__' :
+    unittest.main()

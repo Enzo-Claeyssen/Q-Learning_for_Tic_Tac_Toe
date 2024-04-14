@@ -11,3 +11,7 @@ class testBoard(unittest.TestCase) :
     def test_captureAndGetCell(self) :
         self.board.capture(1, 2, self.opp)
         self.assertEqual(self.opp, self.board.getCell(1, 2).getOwner())
+
+
+if __name__ == '__main__' :
+    unittest.main()

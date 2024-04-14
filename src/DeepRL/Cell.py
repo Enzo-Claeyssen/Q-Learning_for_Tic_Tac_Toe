@@ -1,4 +1,4 @@
-from src.DeepRL.opponent.Opponent import Opponent
+from .opponent.Opponent import Opponent
 
 class Cell() :
     """ This class represents cells used within the board. """
@@ -16,6 +16,10 @@ class Cell() :
         """ Retrieves the owner of this cell """
         return self.__owner
     
-    def printCell(self) :
-        """ Prints the symbole of the owner """
-        pass
+    def getCellRepresentation(self) :
+        """ Returns the symbole of the owner """
+        opp = self.getOwner()
+        if(opp is None) :
+            return ' '
+        else :
+            return opp.getSymbole()

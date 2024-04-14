@@ -11,3 +11,7 @@ class testRandomPlayer(unittest.TestCase, testOpponent) :
     
     def testGetSymbole(self) :
         self.assertEqual('X', self.opp.getSymbole())
+        
+
+if __name__ == '__main__' :
+    unittest.main()
