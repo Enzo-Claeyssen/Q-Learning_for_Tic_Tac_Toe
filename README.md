@@ -23,11 +23,11 @@ Use this to run the program without generating doc again.
 
 
 
-## State of project : V0.0.1
+## State of project : V0.0.2
 
 - UML : V0.0.2
 - Doc + Test : V0.0.2
-- Code : V0.0.1
+- Code : V0.0.2
 
 
 ## Next Step

@@ -35,9 +35,9 @@ class Board() :
         Print the board
         """
         for y in range(3) :
-            print('-------')
+            print('+-+-+-+')
             toPrint = '|'
             for x in range(3) :
                 toPrint += self.getCell(x, y).getCellRepresentation() + '|'
             print(toPrint)
-        print('-------')
+        print('+-+-+-+')
