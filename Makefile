@@ -1,6 +1,6 @@
 
 
-FILE = src src.DeepRL src.DeepRL.opponent src.DeepRL.opponent.Opponent src.DeepRL.opponent.RandomPlayer
+FILE = src src.DeepRL src.DeepRL.Board src.DeepRL.Cell src.DeepRL.opponent src.DeepRL.opponent.Opponent src.DeepRL.opponent.RandomPlayer
 
 
 

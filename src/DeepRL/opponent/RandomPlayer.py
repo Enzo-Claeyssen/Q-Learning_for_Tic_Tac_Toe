@@ -6,7 +6,11 @@ class RandomPlayer(Opponent) :
     This class represents a player who plays randomly.
     """
     
-    def __init__(symbole) :
+    def __init__(self, symbole) :
+        """
+        Creates a new RandomPlayer
+        :Param: symbole The symbole associated with cells captured by this opponent
+        """
         pass
     
     def makeAction(self, message) :
