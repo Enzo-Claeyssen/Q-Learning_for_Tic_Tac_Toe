@@ -42,6 +42,18 @@ class testGame(unittest.TestCase) :
         self.board.capture(2, 2, self.opp2) # Opp2 blocks the line
         self.assertFalse(self.game.isFinished())
     
+    def test_isFinished_Draw(self) :
+        self.board.capture(0, 0, self.opp1)
+        self.board.capture(0, 1, self.opp2)
+        self.board.capture(0, 2, self.opp1)
+        self.board.capture(1, 0, self.opp2)
+        self.board.capture(1, 1, self.opp1)
+        self.board.capture(1, 2, self.opp1)
+        self.board.capture(2, 0, self.opp2)
+        self.board.capture(2, 1, self.opp1)
+        self.board.capture(2, 2, self.opp2)
+        self.assertTrue(self.game.isFinished())
+    
     
     def test_getWinner_opp1WinsHorizontal(self) :
         self.board.capture(0, 0, self.opp1)
