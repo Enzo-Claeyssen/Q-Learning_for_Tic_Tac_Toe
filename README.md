@@ -17,58 +17,64 @@ Generates doc of the project.
 
 - Go to doc directory and open src.html
 
+
+#### Running tests
+Makes sure the code is correct
+- make test
+
+
 #### Running Program
 Use this to run the program without generating doc again.
 - make run
 
 
 
-## State of project : V0.0.2
-
-- UML : V0.0.3
-- Doc + Test : V0.0.3
-- Code : V0.0.2
+## State of project : v0.0.3
 
 
-## Next Step
+When running the program a game of tic tac toe will be played randomly.
+However when a player tries to cheat and play where someone else already player, his turn is skipped.
 
-1. DocTest for V0.0.1
+
+- UML : v0.0.3
+- Doc + Test : v0.0.3
+- Code : v0.0.3
 
 
 ## Scheduled Versions
 
 ### Already Done
 
-- V0.0.1
+- v0.0.1
 Creating RandomPlayer and Opponent
 
-- V0.0.2
+- v0.0.2
 Creating Cell and Board
+
+- v0.0.3
+Creating everything in Game but play()
 
 ### Next versions
 
 
-- V0.0.3
-Creating everything in Game but play()
-
-- V0.0.4
+- v0.0.4
 Game.play() only with randomPlayers
 
-- V0.0.5
+- v0.0.5
 Creating Player
 
-- V0.0.6
+- v0.0.6
 Main Menu to choose players.
 
 
-- V0.1
+- v0.1
 Starting AI implementation
 
-- V1
+- v1
 AI works for Tic Tac Toe
 
-- V2
+- v2
 AI works for Tic Tac Toe + Power 4
 
-- V3
+- v3
 AI works for generalized game
