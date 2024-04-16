@@ -16,6 +16,30 @@ class Game() :
         self.__OPPONENT2 = opp2
     
     
+    def play(self) :
+        """
+        This method permits to run the game.
+        """
+        while(not self.isFinished()) :
+            own_tmp = self.__OPPONENT1
+            while own_tmp != None :
+                x = self.__OPPONENT1.makeAction("Choose a column (0 to 2)")
+                y = self.__OPPONENT1.makeAction("Choose a row (0 to 2)")
+                own_tmp = self.__BOARD.getCell(x, y).getOwner()
+            self.__BOARD.capture(x, y, self.__OPPONENT1)
+            self.__BOARD.printBoard()
+            
+            if not self.isFinished() :
+                own_tmp = self.__OPPONENT2
+                while own_tmp != None :
+                    x = self.__OPPONENT2.makeAction("Choose a column (0 to 2)")
+                    y = self.__OPPONENT2.makeAction("Choose a row (0 to 2)")
+                    own_tmp = self.__BOARD.getCell(x, y).getOwner()
+                self.__BOARD.capture(x, y, self.__OPPONENT2)
+                self.__BOARD.printBoard()
+                
+    
+    
     def isFinished(self) :
         """
         Verifies if the game is finished

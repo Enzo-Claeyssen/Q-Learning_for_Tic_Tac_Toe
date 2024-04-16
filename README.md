@@ -29,16 +29,16 @@ Use this to run the program without generating doc again.
 
 
 
-## State of project : v0.0.3
+## State of project : v0.0.4
 
 
 When running the program a game of tic tac toe will be played randomly.
 However when a player tries to cheat and play where someone else already player, his turn is skipped.
 
 
-- UML : v0.0.3
-- Doc + Test : v0.0.3
-- Code : v0.0.3
+- UML : v0.0.4
+- Doc + Test : v0.0.4
+- Code : v0.0.4
 
 
 ## Scheduled Versions
@@ -54,11 +54,11 @@ Creating Cell and Board
 - v0.0.3
 Creating everything in Game but play()
 
-### Next versions
-
-
 - v0.0.4
 Game.play() only with randomPlayers
+
+
+### Next versions
 
 - v0.0.5
 Creating Player
