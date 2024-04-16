@@ -33,7 +33,6 @@ Use this to run the program without generating doc again.
 
 
 When running the program a game of tic tac toe will be played randomly.
-However when a player tries to cheat and play where someone else already player, his turn is skipped.
 
 
 - UML : v0.0.4
