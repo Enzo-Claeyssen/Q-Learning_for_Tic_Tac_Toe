@@ -29,15 +29,15 @@ Use this to run the program without generating doc again.
 
 
 
-## State of project : v0.0.5
+## State of project : v0.0.6
 
 
-When running the program an interactive game of tic tac toe will be played against randomly playing opponent.
+Interactive version of Tic Tac Toe Game
 
 
-- UML : v0.0.5
-- Doc + Test : v0.0.5
-- Code : v0.0.5
+- UML : v0.0.6
+- Doc + Test : v0.0.6
+- Code : v0.0.6
 
 
 ## Scheduled Versions
@@ -59,12 +59,11 @@ Game.play() only with randomPlayers
 - v0.0.5
 Creating Player
 
-
-### Next versions
-
 - v0.0.6
 Main Menu to choose players.
 
+
+### Next versions
 
 - v0.1
 Starting AI implementation
