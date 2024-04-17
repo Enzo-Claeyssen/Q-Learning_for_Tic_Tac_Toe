@@ -35,8 +35,8 @@ Use this to run the program without generating doc again.
 When running the program a game of tic tac toe will be played randomly.
 
 
-- UML : v0.0.4
-- Doc + Test : v0.0.4
+- UML : v0.0.5
+- Doc + Test : v0.0.5
 - Code : v0.0.4
 
 
