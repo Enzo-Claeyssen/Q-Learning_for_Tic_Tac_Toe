@@ -10,7 +10,7 @@ class Player(Opponent) :
         Creates a new player
         :param: symbole The symbole representing cells of this player
         """
-        pass
+        super().__init__(symbole)
     
     
     def makeAction(self, message) :
@@ -19,4 +19,4 @@ class Player(Opponent) :
         :param: message The message that will be printed before decision
         :return: An int describing the decision.
         """
-        pass
+        return int(input(message))
