@@ -75,7 +75,17 @@ Update Opponent.makeDecision(state) and create Opponent.learn(initialState, acti
 ### Next versions
 
 - v0.1
-Starting AI implementation
+Create QLearning for tic tac toe class and implment helper methods :
+constructor + attributes + setEpsilon + updateEpsilon + policies
+
+- v0.2
+Implement makeAction and learn for QLearningTTT
+
+- v0.3
+Include QLearning to Main Menu (with training mode)
+
+- v0.4
+Import/Export QTable
 
 - v1
 AI works for Tic Tac Toe
