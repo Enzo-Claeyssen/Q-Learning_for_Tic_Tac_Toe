@@ -14,8 +14,7 @@ class Board() :
         Retrives the representation of the board as a grid of cell
         :returns: grid The grid representing the board
         """
-        #TODO
-        pass
+        return self.__grid
     
     
     def getCell(self, x, y) :

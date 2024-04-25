@@ -130,8 +130,7 @@ class Game() :
         Retrieves the state of the game
         :returns: Board's representation as a list of list of Cell
         """
-        #TODO
-        pass
+        return self.__BOARD.getGrid()
     
     
     def __step(self, action) :
@@ -142,7 +141,21 @@ class Game() :
         :returns: state The state of the game after the action has been done.
         """
         # TODO
-        pass
+        x, y = (action % 3, action // 3)
+        
+        if self.__BOARD.getCell(x, y).getOwner() is not None :
+            return -100, self.getState()
+        
+        self.__BOARD.capture(x, y, self.__activeOpponent)
+        winner = self.getWinner()
+        
+        if winner is None :
+            return 0, self.getState()
+        elif winner == self.__activeOpponent :
+            return 1, self.getState()
+        else :
+            return -1, self.getState()
+        
     
     
     def getWinner(self) :

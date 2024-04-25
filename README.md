@@ -29,7 +29,7 @@ Use this to run the program without generating doc again.
 
 
 
-## State of project : v0.0.7
+## State of project : v0.0.8
 
 
 Interactive version of Tic Tac Toe Game
@@ -37,7 +37,7 @@ Interactive version of Tic Tac Toe Game
 
 - UML : v0.0.8
 - Doc + Test : v0.0.8
-- Code : v0.0.7
+- Code : v0.0.8
 
 
 ## Scheduled Versions
@@ -65,14 +65,11 @@ Main Menu to choose players.
 - v0.0.7
 Create next version of Game.play()
 
-
+- v0.0.8
+Create Game.getState() and Game.step(action)
 
 
 ### Next versions
-
-
-- v0.0.8
-Create Game.getState() and Game.step(action)
 
 - v0.0.9
 Update Opponent.makeDecision(state) and create Opponent.learn(initialState, action, reward, finalState)
