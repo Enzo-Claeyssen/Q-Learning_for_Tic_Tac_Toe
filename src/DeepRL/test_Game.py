@@ -87,7 +87,7 @@ class testGame(unittest.TestCase) :
         
         for x in range(3) :
             for y in range(3) :
-                if (x, y) != (0, 0) or (x, y) != (1, 1) or (x, y) != (1, 2) :
+                if (x, y) != (0, 0) and (x, y) != (1, 1) and (x, y) != (1, 2) :
                     self.assertIsNone(self.board.getCell(x, y).getOwner())
 
 
