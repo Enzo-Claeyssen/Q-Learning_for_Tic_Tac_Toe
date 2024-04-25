@@ -6,7 +6,7 @@ class Board() :
     
     def __init__(self) :
         """ Creates a new board with a height and width of 3 """
-        self.__grid = [[Cell() for x in range(3)] for y in range(3)]
+        self.__grid = [[Cell() for col in range(3)] for row in range(3)]
     
     
     def getGrid(self) :

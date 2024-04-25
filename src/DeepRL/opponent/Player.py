@@ -13,16 +13,18 @@ class Player(Opponent) :
         super().__init__(symbole)
     
     
-    def makeAction(self, message) :
+    def makeAction(self, state) :
         """
         Permits to make an action.
-        :param: message The message that will be printed before decision
+        :param: state The actual state of the game as a grid of Cell
         :return: An int describing the decision.
         """
-        return int(input(message))
+        x = int(input("Choose the column where you want to play : "))
+        y = int(input("Choose the row where you want to play : "))
+        return y*3 + x
     
 
-    def learn(state, action, reward, newState) :
+    def learn(self, state, action, reward, newState) :
         """
         This method makes the agent learns based on what has just happened.
         If the agent isn't capable of learning then it won't do anything.
@@ -31,4 +33,4 @@ class Player(Opponent) :
         :param: reward The immediate reward obtained by the opponent
         :param: newState The state of the game after the second opponent played
         """
-        pass
+        # Does Nothing

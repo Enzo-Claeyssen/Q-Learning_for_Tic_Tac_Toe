@@ -17,10 +17,10 @@ class Opponent() :
     
     
     @abstractmethod
-    def makeAction(self, message) :
+    def makeAction(self, state) :
         """
         This method permits an opponent to make a decision
-        :Params: message the string printed to explain the choice
+        :Params: state The actual state of the game as a grid of Cell
         :Return: An int representing the choice made.
         """
         pass
@@ -39,11 +39,24 @@ class Opponent() :
         pass
     
     
-    def __processState(state) :
+    def _processState(self, state) :
         """
         Transforms the classical representation of a state as a unique integer.
         This makes some manipulations easier.
         :param: state The classical representation of the state as a grid of cell.
         :returns: A unique integer identifying this particular state.
         """
-        pass
+        sum = 0
+        for y in range(3) :
+            for x in range(3) :
+                cell = state[y][x]
+                owner = cell.getOwner()
+                
+                if owner is not None :
+                    if owner == self :
+                        sum += 2**(3*y+x)
+                    else :
+                        sum += 2**(3*y+x + 9)
+        return sum
+                
+                

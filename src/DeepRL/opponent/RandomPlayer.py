@@ -13,19 +13,23 @@ class RandomPlayer(Opponent) :
         """
         super().__init__(symbole)
     
-    def makeAction(self, message) :
+    def makeAction(self, state) :
         """
         Permits a randomPlayer to make a random choice.
-        Parameters :
-            message : The message which is printed to permit making a choice
-        Returns :
-            A random integer.
+        :param: state The actual state of the game as a grid of Cell
+        :returns: A random valid action.
         """
-        print(message)
-        return random.randint(0, 2)
+        possibilities = []
+        for y in range(3) :
+            for x in range(3) :
+                cell = state[y][x]
+                if cell.getOwner() is None :
+                    possibilities.append((x, y))
+        x, y = random.choice(possibilities)
+        return 3*y+x
     
     
-    def learn(state, action, reward, newState) :
+    def learn(self, state, action, reward, newState) :
         """
         This method makes the agent learns based on what has just happened.
         If the agent isn't capable of learning then it won't do anything.
@@ -34,4 +38,4 @@ class RandomPlayer(Opponent) :
         :param: reward The immediate reward obtained by the opponent
         :param: newState The state of the game after the second opponent played
         """
-        pass
+        #Does Nothing
