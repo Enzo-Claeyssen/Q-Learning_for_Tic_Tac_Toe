@@ -54,9 +54,9 @@ class Opponent() :
                 
                 if owner is not None :
                     if owner == self :
-                        sum += 2**(3*y+x)
+                        sum += 3**(3*y+x)
                     else :
-                        sum += 2**(3*y+x + 9)
+                        sum += (3**(3*y+x)) * 2
         return sum
                 
                 
