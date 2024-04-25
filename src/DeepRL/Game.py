@@ -4,14 +4,14 @@ from .opponent.Opponent import Opponent
 class Game() :
     """ This class represents Game instances """
     
-    def __init__(self, board, opp1, opp2) :
+    def __init__(self, opp1, opp2) :
         """
         Creates a new game
         :param: board The board where the game will take place
         :param: opp1 The first opponent
         :param: opp2 The second opponent
         """
-        self.__BOARD = board
+        self.__BOARD = Board()
         self.__OPPONENT1 = opp1
         self.__OPPONENT2 = opp2
         self.__activeOpponent = opp1
@@ -112,6 +112,25 @@ class Game() :
                     if self.__BOARD.getCell(x, y).getOwner() is None :
                         return False
             return True
+    
+    def getState() :
+        """
+        Retrieves the state of the game
+        :returns: Board's representation as a list of list of Cell
+        """
+        #TODO
+        pass
+    
+    
+    def __step(action) :
+        """
+        Plays the action, calculates the reward and the final state
+        :param: action The action that has been made by the active opponent
+        :returns: reward The reward given by the env to the opponent
+        :returns: state The state of the game after the action has been done.
+        """
+        # TODO
+        pass
     
     
     def getWinner(self) :

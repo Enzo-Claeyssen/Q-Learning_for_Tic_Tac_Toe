@@ -35,7 +35,7 @@ Use this to run the program without generating doc again.
 Interactive version of Tic Tac Toe Game
 
 
-- UML : v0.0.7
+- UML : v0.0.8
 - Doc + Test : v0.0.7
 - Code : v0.0.7
 
