@@ -9,7 +9,7 @@ class Board() :
         self.__grid = [[Cell() for x in range(3)] for y in range(3)]
     
     
-    def getGrid() :
+    def getGrid(self) :
         """
         Retrives the representation of the board as a grid of cell
         :returns: grid The grid representing the board

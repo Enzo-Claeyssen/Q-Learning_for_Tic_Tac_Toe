@@ -7,11 +7,23 @@ class Game() :
     def __init__(self, opp1, opp2) :
         """
         Creates a new game
-        :param: board The board where the game will take place
         :param: opp1 The first opponent
         :param: opp2 The second opponent
         """
         self.__BOARD = Board()
+        self.__OPPONENT1 = opp1
+        self.__OPPONENT2 = opp2
+        self.__activeOpponent = opp1
+    
+    
+    def __init__(self, board, opp1, opp2) :
+        """
+        Creates a new game
+        :param: board The board where the game will take place
+        :param: opp1 The first opponent
+        :param: opp2 The second opponent
+        """
+        self.__BOARD = board
         self.__OPPONENT1 = opp1
         self.__OPPONENT2 = opp2
         self.__activeOpponent = opp1
@@ -113,7 +125,7 @@ class Game() :
                         return False
             return True
     
-    def getState() :
+    def getState(self) :
         """
         Retrieves the state of the game
         :returns: Board's representation as a list of list of Cell
@@ -122,7 +134,7 @@ class Game() :
         pass
     
     
-    def __step(action) :
+    def __step(self, action) :
         """
         Plays the action, calculates the reward and the final state
         :param: action The action that has been made by the active opponent
