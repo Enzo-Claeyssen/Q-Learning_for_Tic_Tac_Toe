@@ -29,7 +29,7 @@ Use this to run the program without generating doc again.
 
 
 
-## State of project : v0.0.9
+## State of project : v0.1
 
 
 Interactive version of Tic Tac Toe Game
@@ -37,7 +37,7 @@ Interactive version of Tic Tac Toe Game
 
 - UML : v0.2
 - Doc + Test : v0.2
-- Code : v0.0.9
+- Code : v0.1
 
 
 ## Scheduled Versions
@@ -76,12 +76,12 @@ Update Opponent.makeDecision(state) and create Opponent.learn(initialState, acti
 
 #### Creation of first AI
 
-
-### Next versions
-
 - v0.1
 Create QLearning for tic tac toe class and helper methods :
 constructor + attributes + setEpsilon + updateEpsilon + policies + resetQTable
+
+
+### Next versions
 
 - v0.2
 makeAction and learn for QLearningTTT

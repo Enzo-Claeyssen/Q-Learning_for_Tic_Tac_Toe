@@ -1,4 +1,5 @@
 from .Opponent import Opponent
+from math import exp
 
 
 class QLearningTTT(Opponent) :
@@ -48,14 +49,14 @@ class QLearningTTT(Opponent) :
         """
         Resets the QTable
         """
-        pass
+        QLearningTTT.__QTable = [[0 for _ in range(9)] for _ in range(19683)]
     
     
     def decayEpsilon() :
         """
         Decays the epsilon, less exploration and more exploitation
         """
-        pass
+        self.__epsilon = 0.05 + 0.95 * exp(-1 * self.__decayRate * self.__numberOfDecay)
     
     
     def __greedyPolicy(state) :
@@ -64,7 +65,15 @@ class QLearningTTT(Opponent) :
         :param: state The state as an int where the action has to be taken
         :return: An int describing the action maximizing expected cumulative reward
         """
-        pass
+        possibilities = QLearnintTTT.QTable[state]
+        maxi = possibilities[0]
+        maxi_i = 0
+        for i in range(1, 9) :
+            tmp = possibilities[1]
+            if tmp > maxi :
+                maxi = tmp
+                maxi_i = i
+        return i
     
     
     def __epsilonGreedyPolicy(state) :
@@ -75,4 +84,7 @@ class QLearningTTT(Opponent) :
         :param: state The state as an int where the action has to be taken.
         :return: An int describing the action
         """
-        pass
+        if self.trainingMode :
+            return Random.randint(0, 8)
+        else :
+            return self.__greedyPolicy(state)
