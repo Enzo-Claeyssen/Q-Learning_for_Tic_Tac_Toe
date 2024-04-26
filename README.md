@@ -35,14 +35,16 @@ Use this to run the program without generating doc again.
 Interactive version of Tic Tac Toe Game
 
 
-- UML : v0.0.9
-- Doc + Test : v0.0.9
+- UML : v0.2
+- Doc + Test : v0.2
 - Code : v0.0.9
 
 
 ## Scheduled Versions
 
 ### Already Done
+
+#### Creation of basic environment
 
 - v0.0.1
 Creating RandomPlayer and Opponent
@@ -72,20 +74,23 @@ Create Game.getState() and Game.step(action)
 Update Opponent.makeDecision(state) and create Opponent.learn(initialState, action, reward, finalState)
 
 
+#### Creation of first AI
+
+
 ### Next versions
 
 - v0.1
-Create QLearning for tic tac toe class and implment helper methods :
-constructor + attributes + setEpsilon + updateEpsilon + policies
+Create QLearning for tic tac toe class and helper methods :
+constructor + attributes + setEpsilon + updateEpsilon + policies + resetQTable
 
 - v0.2
-Implement makeAction and learn for QLearningTTT
+makeAction and learn for QLearningTTT
 
 - v0.3
 Include QLearning to Main Menu (with training mode)
 
 - v0.4
-Import/Export QTable
+Import/Export QTable from/to a file
 
 - v1
 AI works for Tic Tac Toe
