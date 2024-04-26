@@ -9,12 +9,13 @@ class Board() :
         self.__grid = [[Cell() for col in range(3)] for row in range(3)]
     
     
-    def getGrid(self) :
+    def copyGrid(self) :
         """
-        Retrives the representation of the board as a grid of cell
+        Retrives an independant copy of the grid.
         :returns: grid The grid representing the board
         """
-        return self.__grid
+        copy = [[self.__grid[y][x].getCopy() for x in range(3)] for y in range(3)]
+        return copy
     
     
     def getCell(self, x, y) :

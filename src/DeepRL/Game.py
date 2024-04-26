@@ -4,29 +4,20 @@ from .opponent.Opponent import Opponent
 class Game() :
     """ This class represents Game instances """
     
-    def __init__(self, opp1, opp2) :
-        """
-        Creates a new game
-        :param: opp1 The first opponent
-        :param: opp2 The second opponent
-        """
-        self.__BOARD = Board()
-        self.__OPPONENT1 = opp1
-        self.__OPPONENT2 = opp2
-        self.__activeOpponent = opp1
     
-    
-    def __init__(self, board, opp1, opp2) :
+    def __init__(self, board, opp1, opp2, verbose = True) :
         """
         Creates a new game
         :param: board The board where the game will take place
         :param: opp1 The first opponent
         :param: opp2 The second opponent
+        :param: verbose True by default, this tells if board has to be printed when game is played.
         """
         self.__BOARD = board
         self.__OPPONENT1 = opp1
         self.__OPPONENT2 = opp2
         self.__activeOpponent = opp1
+        self.verbose = verbose
     
     
     def play(self) :
@@ -36,56 +27,60 @@ class Game() :
         """
         # Initialize first round
         firstRoundFinished = False
-        state1 = self.getState()
+        newState1 = self.getState()
         
         while True :
             
-            print("")
-            self.__BOARD.printBoard()
-            print("")
+            if self.verbose :
+                print("")
+                self.__BOARD.printBoard()
+                print("")
             
             if not self.isFinished() :
                 # Opponent 1 plays
                 self.__activeOpponent = self.__OPPONENT1
+                state1 = newState1
                 action1 = self.__activeOpponent.makeAction(state1)
-                reward1, state2 = self.__step(action1)
+                reward1, newState2 = self.__step(action1)
                 # Play until choosing a valid action
                 while reward1 == -100 :
                     # Agent learns he took an invalid action
-                    self.__activeOpponent.learn(state1, action1, reward1, state2)
+                    self.__activeOpponent.learn(state1, action1, reward1, newState2)
                     # Plays once again
                     action1 = self.__activeOpponent.makeAction(state1)
-                    reward1, state2 = self.__step(action1)
+                    reward1, newState2 = self.__step(action1)
                 # If opp2 played then he learns
                 if firstRoundFinished :
-                    self.__OPPONENT2.learn(state2, action2, -1 * reward1, state1)
+                    self.__OPPONENT2.learn(state2, action2, -1 * reward1, newState2)
             else :
                 # Opponent 2 finished the game
-                self.__OPPONENT2.learn(state2, action2, reward2, state1)
+                self.__OPPONENT2.learn(state2, action2, reward2, newState1)
                 break
             
             firstRoundFinished = True
-            print("")
-            self.__BOARD.printBoard()
-            print("")
+            if self.verbose :
+                print("")
+                self.__BOARD.printBoard()
+                print("")
             
             if not self.isFinished() :
                 # Opponent 2 plays
                 self.__activeOpponent = self.__OPPONENT2
+                state2 = newState2
                 action2 = self.__activeOpponent.makeAction(state2)
-                reward2, state1 = self.__step(action2)
+                reward2, newState1 = self.__step(action2)
                 # Play until choosing a valid action
                 while reward2 == -100 :
                     # Agent learns he took an invalid action
-                    self.__activeOpponent.learn(state2, action2, reward2, state1)
+                    self.__activeOpponent.learn(state2, action2, reward2, newState1)
                     # Plays once again
                     action2 = self.__activeOpponent.makeAction(state2)
-                    reward2, state1 = self.__step(action2)
+                    reward2, newState1 = self.__step(action2)
                 # At the end of Opp2's turn Opp1 learns
-                self.__OPPONENT1.learn(state1, action1, -1 * reward2, state2)
+                self.__OPPONENT1.learn(state1, action1, -1 * reward2, newState1)
             else :
                 # Opponent 1 finished the game
-                self.__OPPONENT1.learn(state1, action1, reward1, state2)
+                self.__OPPONENT1.learn(state1, action1, reward1, newState2)
                 break
         
         #End of the game
@@ -111,7 +106,7 @@ class Game() :
         Retrieves the state of the game
         :returns: Board's representation as a list of list of Cell
         """
-        return self.__BOARD.getGrid()
+        return self.__BOARD.copyGrid()
     
     
     def __step(self, action) :

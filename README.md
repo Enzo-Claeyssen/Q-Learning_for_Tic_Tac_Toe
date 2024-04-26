@@ -1,13 +1,17 @@
 # DeepRLTesting
-Using DeepRL to create an AI able to play generalized versions of Power4 and TicTacToe
+Using RL and DeepRL algorithms to create models able to play generalized versions of Power4 and TicTacToe
 
 
 ## How to use ?
 
+- Download the zip of the lastest release
+- Unzip
+- Open shell within "DeepRLTesting" folder
+- Type make
 
 #### First time use ?
 Generates doc + runs the program.
-- Use make command
+- make
 
 #### Creating docs
 Generates doc of the project.
@@ -29,7 +33,7 @@ Use this to run the program without generating doc again.
 
 
 
-## State of project : v0.1
+## State of project : v0.2
 
 
 Interactive version of Tic Tac Toe Game
@@ -37,7 +41,7 @@ Interactive version of Tic Tac Toe Game
 
 - UML : v0.2
 - Doc + Test : v0.2
-- Code : v0.1
+- Code : v0.2
 
 
 ## Scheduled Versions
@@ -80,11 +84,11 @@ Update Opponent.makeDecision(state) and create Opponent.learn(initialState, acti
 Create QLearning for tic tac toe class and helper methods :
 constructor + attributes + setEpsilon + updateEpsilon + policies + resetQTable
 
-
-### Next versions
-
 - v0.2
 makeAction and learn for QLearningTTT
+
+
+### Next versions
 
 - v0.3
 Include QLearning to Main Menu (with training mode)

@@ -7,6 +7,15 @@ class Cell() :
         """ Creates a new cell """
         self.__owner = None
     
+    def getCopy(self) :
+        """
+        Creates an independant copy of this cell
+        :returns: Copy of this but as a new instance of this class
+        """
+        copy = Cell()
+        copy.setOwner(self.getOwner())
+        return copy
+    
     def setOwner(self, opp) :
         """ Sets the owner of the cell if the cell isn't already captured. """
         if(self.__owner == None) :

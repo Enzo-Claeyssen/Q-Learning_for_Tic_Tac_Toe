@@ -1,5 +1,6 @@
 from .Opponent import Opponent
 from math import exp
+import random
 
 
 class QLearningTTT(Opponent) :
@@ -25,58 +26,73 @@ class QLearningTTT(Opponent) :
         self.__learningRate = 0.7
     
     
-    def makeAction(state) :
+    def makeAction(self, state) :
         """
         Returns the action made by the opponent
         :param: state The state where the action is taken.
         :return: An int representing the action
         """
-        pass
+        processed = self._processState(state)
+        if self.trainingMode :
+            action = self.__epsilonGreedyPolicy(processed)
+        else :
+            action = self.__greedyPolicy(processed)
+        return action
     
     
-    def learn(state, action, reward, newState) :
+    def learn(self, state, action, reward, newState) :
         """
         Updates the QTable using TDLearning
         :param: state The initial state as a grid of Cell where the action has been taken
         :param: action The action that has been made
         :param: reward The immediate reward obtained
-        :param: newState The state of the env once the other opponent played
+        :param: newState The state as a grid of Cell of the env once the other opponent played
         """
-        pass
+        initialState = self._processState(state)
+        finalState = self._processState(newState)
+        
+        nextAction = self.__greedyPolicy(finalState)
+        calculatedCumulativeReward = reward + self.__discountFactor * QLearningTTT.__QTable[finalState][nextAction]
+        
+        expectedCumulativeReward = QLearningTTT.__QTable[initialState][action]
+        error = calculatedCumulativeReward - expectedCumulativeReward
+        
+        QLearningTTT.__QTable[initialState][action] = expectedCumulativeReward + self.__learningRate * (error)
     
     
-    def resetQTable() :
+    def resetQTable(self) :
         """
         Resets the QTable
         """
         QLearningTTT.__QTable = [[0 for _ in range(9)] for _ in range(19683)]
     
     
-    def decayEpsilon() :
+    def decayEpsilon(self) :
         """
         Decays the epsilon, less exploration and more exploitation
         """
         self.__epsilon = 0.05 + 0.95 * exp(-1 * self.__decayRate * self.__numberOfDecay)
+        self.__numberOfDecay += 1
     
     
-    def __greedyPolicy(state) :
+    def __greedyPolicy(self, state) :
         """
         Takes an action according to the greedyPolicy.
         :param: state The state as an int where the action has to be taken
         :return: An int describing the action maximizing expected cumulative reward
         """
-        possibilities = QLearnintTTT.QTable[state]
+        possibilities = QLearningTTT.__QTable[state]
         maxi = possibilities[0]
         maxi_i = 0
         for i in range(1, 9) :
-            tmp = possibilities[1]
+            tmp = possibilities[i]
             if tmp > maxi :
                 maxi = tmp
                 maxi_i = i
-        return i
+        return maxi_i
     
     
-    def __epsilonGreedyPolicy(state) :
+    def __epsilonGreedyPolicy(self, state) :
         """
         Takes an action according to the epsilon greedy policy.
         With a probability of epsilon, will take a random action.
@@ -84,7 +100,7 @@ class QLearningTTT(Opponent) :
         :param: state The state as an int where the action has to be taken.
         :return: An int describing the action
         """
-        if self.trainingMode :
-            return Random.randint(0, 8)
+        if random.uniform(0, 1) <= self.__epsilon :
+            return random.randint(0, 8)
         else :
             return self.__greedyPolicy(state)
