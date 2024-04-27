@@ -33,15 +33,15 @@ Use this to run the program without generating doc again.
 
 
 
-## State of project : v0.4
+## State of project : v1
 
 
 Interactive version of Tic Tac Toe Game
 
 
-- UML : v0.4
-- Doc + Test : v0.4
-- Code : v0.4
+- UML : v1
+- Doc + Test : v1
+- Code : v1
 
 
 ## Scheduled Versions
@@ -94,10 +94,10 @@ Include QLearning to Main Menu (with training mode)
 Import/Export QTable from/to a file
 
 
-### Next versions
-
 - v1
 Pre-trained QLearning agent for Tic Tac Toe
+
+### Next versions
 
 - v2
 AI works for Tic Tac Toe + Power 4
