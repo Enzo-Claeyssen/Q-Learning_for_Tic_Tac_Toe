@@ -33,15 +33,15 @@ Use this to run the program without generating doc again.
 
 
 
-## State of project : v0.2
+## State of project : v0.3
 
 
 Interactive version of Tic Tac Toe Game
 
 
-- UML : v0.2
-- Doc + Test : v0.2
-- Code : v0.2
+- UML : v0.3
+- Doc + Test : v0.3
+- Code : v0.3
 
 
 ## Scheduled Versions
@@ -87,11 +87,10 @@ constructor + attributes + setEpsilon + updateEpsilon + policies + resetQTable
 - v0.2
 makeAction and learn for QLearningTTT
 
-
-### Next versions
-
 - v0.3
 Include QLearning to Main Menu (with training mode)
+
+### Next versions
 
 - v0.4
 Import/Export QTable from/to a file

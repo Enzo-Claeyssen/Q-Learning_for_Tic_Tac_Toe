@@ -16,11 +16,14 @@ def navigate_mainMenu() :
     print("---Main Menu---")
     print("Type the corresponding number to make a choice.")
     x = -1
-    while(not (x >= 0 and x <= 0)) :
+    while(not (x >= 0 and x <= 1)) :
         print("0 : New Game")
+        print("1 : Training")
         x = int(input("Your choice : "))
     if x == 0 :
         navigate_gameSettings()
+    elif x == 1 :
+        navigate_trainingMenu()
 
 
 def navigate_gameSettings() :
@@ -41,34 +44,80 @@ def navigate_gameSettings() :
             OPP2 = Player('O')
             
         case 1 :
-            print("Choose your symbole, X player will begin.")
-            
-            y = -1
-            while(not(y >= 0 and y <= 1)) :
-                print("0 : Play as X")
-                print("1 : Play as O")
-                y = int(input("Your choice : "))
-            if y == 0 :
+            symbole = chooseSymbole()
+            if symbole == 'X' :
+                opponent = chooseOpponent('O')
                 OPP1 = Player('X')
-                OPP2 = RandomPlayer('O')
+                OPP2 = opponent
             else :
-                OPP1 = RandomPlayer('X')
+                opponent = chooseOpponent('X')
+                OPP1 = opponent
                 OPP2 = Player('O')
         
         case 2 :
-            OPP1 = RandomPlayer('X')
-            OPP2 = RandomPlayer('O')
+            print("Creating opponent 1 : ")
+            opponent1 = chooseOpponent('X')
+            print("Creating opponent 2 : ")
+            opponent2 = chooseOpponent('O')
+            OPP1 = opponent1
+            OPP2 = opponent2
     
     runGame()
+    navigate_mainMenu()
 
 
-def runGame() :
+def navigate_trainingMenu() :
+    global OPP1
+    global OPP2
+    print("---Training Menu---")
+    trainingGames = int(input("Enter here number of training games : "))
+    OPP1 = QLearningTTT('X', True)
+    OPP2 = QLearningTTT('O', True)
+    for i in range(trainingGames) :
+        runGame(False)
+        OPP1.decayEpsilon()
+        OPP2.decayEpsilon()
+        
+        print(f"{i/trainingGames*100} %")
+    print("Training Completed")
+    navigate_mainMenu()
+
+
+def chooseSymbole() :
+    print("Choose your symbole, X player will begin.")
+    y = -1
+    while(not(y >= 0 and y <= 1)) :
+        print("0 : Play as X")
+        print("1 : Play as O")
+        y = int(input("Your choice : "))
+    if y == 0 :
+        return 'X'
+    else :
+        return 'O'
+
+def chooseOpponent(symbole) :
+    print("Choose the type of the opponent.")
+    print("0 : Random")
+    print("1 : Q-LearningTTT")
+    x = int(input("Enter your choice : "))
+    
+    match x :
+        case 0 :
+            return RandomPlayer(symbole)
+        
+        case 1 :
+            return QLearningTTT(symbole, False)
+
+
+
+def runGame(verbose = True) :
     global OPP1
     global OPP2
     global GAME
-    GAME = Game(Board(), OPP1, OPP2)
+    GAME = Game(Board(), OPP1, OPP2, verbose)
     GAME.play()
-    printWinner()
+    if verbose :
+        printWinner()
 
 def printWinner() :
     winner = GAME.getWinner()
@@ -79,7 +128,7 @@ def printWinner() :
 
 
 
-def main() :
+def OLDmain() :
     global OPP1
     global OPP2
     global GAME
@@ -127,7 +176,7 @@ def main() :
 
 
 
-def OLD_main() :
+def main() :
     navigate_mainMenu()
 
 
