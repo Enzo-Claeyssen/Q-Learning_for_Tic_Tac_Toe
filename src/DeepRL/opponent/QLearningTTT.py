@@ -1,6 +1,7 @@
 from .Opponent import Opponent
 from math import exp
 import random
+import csv
 
 
 class QLearningTTT(Opponent) :
@@ -59,8 +60,28 @@ class QLearningTTT(Opponent) :
         
         QLearningTTT.__QTable[initialState][action] = expectedCumulativeReward + self.__learningRate * (error)
     
+    @staticmethod
+    def importQTable() :
+        """
+        Imports the QTable
+        """
+        newQTable = []
+        with open('models/QTableTTT.csv', 'r') as file :
+            reader = csv.reader(file, quoting=csv.QUOTE_NONNUMERIC)
+            newQTable = list(reader)
+        QLearningTTT.__QTable = newQTable
     
-    def resetQTable(self) :
+    @staticmethod
+    def exportQTable() :
+        """
+        Exports the QTable
+        """
+        with open('models/QTableTTT.csv', 'w') as file :
+            writer = csv.writer(file)
+            writer.writerows(QLearningTTT.__QTable)
+    
+    @staticmethod
+    def resetQTable() :
         """
         Resets the QTable
         """

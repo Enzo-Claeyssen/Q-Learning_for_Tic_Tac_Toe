@@ -16,14 +16,19 @@ def navigate_mainMenu() :
     print("---Main Menu---")
     print("Type the corresponding number to make a choice.")
     x = -1
-    while(not (x >= 0 and x <= 1)) :
+    while(not (x >= 0 and x <= 2)) :
         print("0 : New Game")
         print("1 : Training")
+        print("2 : Import/Export")
         x = int(input("Your choice : "))
-    if x == 0 :
-        navigate_gameSettings()
-    elif x == 1 :
-        navigate_trainingMenu()
+    
+    match x :
+        case 0 :
+            navigate_gameSettings()
+        case 1 :
+            navigate_trainingMenu()
+        case 2 :
+            navigate_importMenu()
 
 
 def navigate_gameSettings() :
@@ -82,6 +87,26 @@ def navigate_trainingMenu() :
     print("Training Completed")
     navigate_mainMenu()
 
+def navigate_importMenu() :
+    print('---Import/Export---')
+    print('0 : Reset')
+    print('1 : Import')
+    print('2 : Export')
+    x = int(input('Enter here : '))
+    
+    match x :
+        case 0 :
+            QLearningTTT.resetQTable()
+        
+        case 1 :
+            QLearningTTT.importQTable()
+        
+        case 2:
+            QLearningTTT.exportQTable()
+    
+    navigate_mainMenu()
+            
+
 
 def chooseSymbole() :
     print("Choose your symbole, X player will begin.")
@@ -128,51 +153,26 @@ def printWinner() :
 
 
 
-def OLDmain() :
+def mainExport() :
     global OPP1
     global OPP2
-    global GAME
-    
-    print("")
-    print("Welcome, this program trains a bot using Q-Learning to play Tic Tac Toe.")
-    print("To perform well enough, this bot needs to train by playing games against himself.")
-    print("Even after the training, the bot will continue to learn by playing against you.")
-    print("Enter below the number of games the bot will play against himself in order to train.")
-    print("")
-    print("0 - Not trained")
-    print("1000 - Easy")
-    print("40000 - Medium")
-    print("100000 - Impossible")
+    print("---Training Menu---")
     trainingGames = int(input("Enter here number of training games : "))
     OPP1 = QLearningTTT('X', True)
     OPP2 = QLearningTTT('O', True)
     for i in range(trainingGames) :
-        GAME = Game(Board(), OPP1, OPP2, verbose = False)
-        GAME.play()
-        
+        runGame(False)
         OPP1.decayEpsilon()
         OPP2.decayEpsilon()
         
         print(f"{i/trainingGames*100} %")
-    
-    while True :
-        print("Choose your symbole, X player will begin.")
-                
-        y = -1
-        while(not(y >= 0 and y <= 1)) :
-            print("0 : Play as X")
-            print("1 : Play as O")
-            y = int(input("Your choice : "))
-        if y == 0 :
-            OPP1 = Player('X')
-            OPP2 = QLearningTTT('O', False)
-        else :
-            OPP1 = QLearningTTT('X', False)
-            OPP2 = Player('O')
-        
-        runGame()
-    
-    
+    print("Training Completed")
+    OPP1.exportQTable()
+
+def mainImport() :
+    QLearningTTT('X', True).importQTable()
+    navigate_mainMenu()
+
 
 
 
