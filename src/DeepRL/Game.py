@@ -116,7 +116,6 @@ class Game() :
         :returns: reward The reward given by the env to the opponent
         :returns: state The state of the game after the action has been done.
         """
-        # TODO
         x, y = (action % 3, action // 3)
         
         if self.__BOARD.getCell(x, y).getOwner() is not None :

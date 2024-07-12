@@ -58,5 +58,22 @@ class Opponent() :
                     else :
                         sum += (3**(3*y+x)) * 2
         return sum
+    
+    
+    def _linearState(self, state) :
+        newState = []
+        for y in range(3) :
+            for x in range(3) :
+                cell = state[y][x]
+                owner = cell.getOwner()
+                
+                if owner is not None :
+                    if owner == self :
+                        newState.append(1)
+                    else :
+                        newState.append(-1)
+                else :
+                    newState.append(0)
+        return newState
                 
                 

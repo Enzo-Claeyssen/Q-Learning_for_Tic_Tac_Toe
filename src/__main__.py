@@ -2,6 +2,7 @@ from DeepRL.Game import Game
 from DeepRL.opponent.Player import Player
 from DeepRL.opponent.RandomPlayer import RandomPlayer
 from DeepRL.opponent.QLearningTTT import QLearningTTT
+from DeepRL.opponent.DQN import DQN
 from DeepRL.Board import Board
 
 
@@ -75,9 +76,22 @@ def navigate_trainingMenu() :
     global OPP1
     global OPP2
     print("---Training Menu---")
+    
+    print("Choose which AI to train : ")
+    print("0 : Q-LearningTTT")
+    print("1 : DQN")
+    
+    x = int(input("Input here : "))
+    match x :
+        case 0 :
+            OPP1 = QLearningTTT('X', True)
+            OPP2 = QLearningTTT('O', True)
+        case 1 :
+            OPP1 = DQN('X', True)
+            OPP2 = DQN('O', True)
+    
+    
     trainingGames = int(input("Enter here number of training games : "))
-    OPP1 = QLearningTTT('X', True)
-    OPP2 = QLearningTTT('O', True)
     for i in range(trainingGames) :
         runGame(False)
         OPP1.decayEpsilon()
@@ -124,6 +138,7 @@ def chooseOpponent(symbole) :
     print("Choose the type of the opponent.")
     print("0 : Random")
     print("1 : Q-LearningTTT")
+    print("2 : DQN")
     x = int(input("Enter your choice : "))
     
     match x :
@@ -132,6 +147,9 @@ def chooseOpponent(symbole) :
         
         case 1 :
             return QLearningTTT(symbole, False)
+        
+        case 2 :
+            return DQN(symbole, False)
 
 
 
