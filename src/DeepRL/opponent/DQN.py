@@ -51,6 +51,7 @@ class Synapse :
         self.value = 0
         self.weight = random.random() * 2 - 1
         self.prev_neuron = prevNeuron
+        self.error = 0
     
     def setWeight(self, weight) :
         self.weight = weight
@@ -75,6 +76,8 @@ class Network :
         self.outputLayer = self.layers[n-1]
         self.synapse = [[[Synapse(neuron) for _ in range(len(self.layers[layerIndex+1]))] for neuron in self.layers[layerIndex]] for layerIndex in range(n-1)]
         self.learningRate = 0.1
+        self.batchSize = 128
+        self.batch = []
         
         for neuronIndex in range(len(self.inputLayer)) :
             neuron = self.inputLayer[neuronIndex]
@@ -112,6 +115,7 @@ class Network :
         return res
     
     
+    
     def learn(self, data) :
         for experiment in data :
             self.propagate(experiment[0])
@@ -143,8 +147,86 @@ class Network :
                         synapse = self.synapse[layerIndex][neuronIndex][nextNeuronIndex]
                         
                         synapse.weight = synapse.weight - self.learningRate * neuron.value * nextNeuron.error
-
-
+    
+    
+    
+    
+    def learn_FOR_BATCH(self, data) :
+        self.batch.append(data)
+        if len(self.batch) >= self.batchSize :
+            self.batchLearn(self.batch)
+            self.batch = []
+        
+    
+    def batchLearn(self, data) :
+        self.reset_errors()
+        n = len(data)
+        
+        k = -1
+        for experiment in data :
+            k += 1
+            self.propagate(experiment[0])
+            for i in range(len(self.outputLayer)) :
+                neuron = self.outputLayer[i]
+                expectedResult = experiment[1][i]
+                neuron.error.append(neuron.value - expectedResult)
+            
+            for layerIndex in range(len(self.layers) - 2, -1, -1) :
+                for neuronIndex in range(len(self.layers[layerIndex])) :
+                    neuron = self.layers[layerIndex][neuronIndex]
+                    
+                    nextError = 0
+                    for nextNeuronIndex in range(len(self.layers[layerIndex + 1])) :
+                        nextError += self.layers[layerIndex + 1][nextNeuronIndex].error[k] * self.synapse[layerIndex][neuronIndex][nextNeuronIndex].weight
+                    neuron.error.append(neuron.value * (1 - neuron.value) * nextError)
+                    
+                    for nextNeuronIndex in range(len(self.layers[layerIndex + 1])) :
+                        nextNeuron = self.layers[layerIndex + 1][nextNeuronIndex]
+                        synapse = self.synapse[layerIndex][neuronIndex][nextNeuronIndex]
+                        synapse.error.append(neuron.value * nextNeuron.error[k])
+            
+        self.calculate_errors(n)
+            
+        for neuron in self.outputLayer :
+            neuron.biais = neuron.biais - self.learningRate * neuron.error
+            
+        for layerIndex in range(len(self.layers) -1) :
+            for neuronIndex in range(len(self.layers[layerIndex])) :
+                neuron = self.layers[layerIndex][neuronIndex]
+                    
+                neuron.biais = neuron.biais - self.learningRate * neuron.error
+                    
+                for nextNeuronIndex in range(len(self.layers[layerIndex + 1])) :
+                    nextNeuron = self.layers[layerIndex + 1][nextNeuronIndex]
+                    synapse = self.synapse[layerIndex][neuronIndex][nextNeuronIndex]
+                        
+                    synapse.weight = synapse.weight - self.learningRate * synapse.error
+    
+                        
+    def reset_errors(self) :
+        for layerIndex in range(len(self.layers)) :
+            for neuronIndex in range(len(self.layers[layerIndex])) :
+                neuron = self.layers[layerIndex][neuronIndex]
+                neuron.error = []
+        
+        for layerIndex in range(len(self.layers) - 1) :
+            for neuronIndex in range(len(self.layers[layerIndex])) :
+                for nextNeuronIndex in range(len(self.layers[layerIndex + 1])) :
+                    synapse = self.synapse[layerIndex][neuronIndex][nextNeuronIndex]
+                    synapse.error = []
+    
+    
+    def calculate_errors(self, divider) :
+        for layerIndex in range(len(self.layers)) :
+            for neuronIndex in range(len(self.layers[layerIndex])) :
+                neuron = self.layers[layerIndex][neuronIndex]
+                neuron.error = sum(neuron.error) / divider
+        
+        for layerIndex in range(len(self.layers) - 1) :
+            for neuronIndex in range(len(self.layers[layerIndex])) :
+                for nextNeuronIndex in range(len(self.layers[layerIndex + 1])) :
+                    synapse = self.synapse[layerIndex][neuronIndex][nextNeuronIndex]
+                    synapse.error = sum(synapse.error) / divider
 
 
 class DQN(Opponent) :

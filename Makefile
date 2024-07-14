@@ -43,7 +43,8 @@ run :
 	@echo Running programm
 	@echo ------
 	
-	@python3 src
+	@python3 -m venv env
+	@. env/bin/activate; pip install tqdm; python3 src
 	
 	@echo ------
 	@echo Program ended

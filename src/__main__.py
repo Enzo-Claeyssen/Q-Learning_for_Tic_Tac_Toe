@@ -4,6 +4,7 @@ from DeepRL.opponent.RandomPlayer import RandomPlayer
 from DeepRL.opponent.QLearningTTT import QLearningTTT
 from DeepRL.opponent.DQN import DQN
 from DeepRL.Board import Board
+from tqdm import tqdm
 
 
 # Global variables
@@ -92,12 +93,11 @@ def navigate_trainingMenu() :
     
     
     trainingGames = int(input("Enter here number of training games : "))
-    for i in range(trainingGames) :
+    for i in tqdm(range(trainingGames), desc = "Training...") :
         runGame(False)
         OPP1.decayEpsilon()
         OPP2.decayEpsilon()
         
-        print(f"{i/trainingGames*100} %")
     print("Training Completed")
     navigate_mainMenu()
 
