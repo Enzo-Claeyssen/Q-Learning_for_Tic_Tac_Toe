@@ -23,7 +23,6 @@ class QLearningTTT(Opponent) :
         self.__epsilon = 1
         self.__decayRate = 0.0005
         self.__numberOfDecay = 0
-        self.__discountFactor = 0.99
         self.__learningRate = 0.7
     
     
@@ -41,7 +40,7 @@ class QLearningTTT(Opponent) :
         return action
     
     
-    def learn(self, state, action, reward, newState) :
+    def learn(self, state, action, reward) :
         """
         Updates the QTable using TDLearning
         :param: state The initial state as a grid of Cell where the action has been taken
@@ -50,15 +49,12 @@ class QLearningTTT(Opponent) :
         :param: newState The state as a grid of Cell of the env once the other opponent played
         """
         initialState = self._processState(state)
-        finalState = self._processState(newState)
-        
-        nextAction = self.__greedyPolicy(finalState)
-        calculatedCumulativeReward = reward + self.__discountFactor * QLearningTTT.__QTable[finalState][nextAction]
         
         expectedCumulativeReward = QLearningTTT.__QTable[initialState][action]
-        error = calculatedCumulativeReward - expectedCumulativeReward
+        error = reward - expectedCumulativeReward
         
         QLearningTTT.__QTable[initialState][action] = expectedCumulativeReward + self.__learningRate * (error)
+        self.decayEpsilon()
     
     @staticmethod
     def importQTable() :

@@ -1,3 +1,5 @@
+# Works only on Linux (due to makefile)
+
 # DeepRLTesting
 Using RL and DeepRL algorithms to create models able to play generalized versions of Power4 and TicTacToe
 
@@ -10,7 +12,7 @@ Using RL and DeepRL algorithms to create models able to play generalized version
 - Type make
 
 #### First time use ?
-Generates doc + runs the program.
+Generates doc + runs the program and install depedencies.
 - make
 
 #### Creating docs
@@ -33,74 +35,25 @@ Use this to run the program without generating doc again.
 
 
 
-## State of project : v1
+## State of project : Q-Learning agent works, DQN W.I.P
+- Features tic tac toe game
+- Random Opponent (playing totally randomly)
+- Q-Learning Agent using tabular Q-learning
+- DQN Agent using neural network (W.I.P)
+- Pre-Trained models ready to be imported (see Import/Export within the program)
+- Able to export your own model to re-import it later
 
 
-Interactive version of Tic Tac Toe Game
-
-
-- UML : v1
-- Doc + Test : v1
-- Code : v1
-
-
-## Scheduled Versions
+## Scheduled : DQN
 
 ### Already Done
-
-#### Creation of basic environment
-
-- v0.0.1
-Creating RandomPlayer and Opponent
-
-- v0.0.2
-Creating Cell and Board
-
-- v0.0.3
-Creating everything in Game but play()
-
-- v0.0.4
-Game.play() only with randomPlayers
-
-- v0.0.5
-Creating Player
-
-- v0.0.6
-Main Menu to choose players.
-
-- v0.0.7
-Create next version of Game.play()
-
-- v0.0.8
-Create Game.getState() and Game.step(action)
-
-- v0.0.9
-Update Opponent.makeDecision(state) and create Opponent.learn(initialState, action, reward, finalState)
+- DENSE network generation
+- Feed Forward + Backpropagation with numpy
+- Mini-Batch Learning
+- First Pre-Trained DQN Agent
 
 
-#### Creation of first AI
+### TODO
+- Generate a perfect pre-trained DQN agent (perfect agent = solved tic tac toe)
+- Make sure a perfect agent is generated each time training is done from scratch
 
-- v0.1
-Create QLearning for tic tac toe class and helper methods :
-constructor + attributes + setEpsilon + updateEpsilon + policies + resetQTable
-
-- v0.2
-makeAction and learn for QLearningTTT
-
-- v0.3
-Include QLearning to Main Menu (with training mode)
-
-- v0.4
-Import/Export QTable from/to a file
-
-
-- v1
-Pre-trained QLearning agent for Tic Tac Toe
-
-### Next versions
-
-- v2
-AI works for Tic Tac Toe + Power 4
-
-- v3
-AI works for generalized game

@@ -19,12 +19,23 @@ class Player(Opponent) :
         :param: state The actual state of the game as a grid of Cell
         :return: An int describing the decision.
         """
-        x = int(input("Choose the column where you want to play : "))
-        y = int(input("Choose the row where you want to play : "))
+        str_x = input("Choose the column where you want to play : ")
+        while not(str_x.isdigit()) :
+            print("Invalid, try again.")
+            str_x = input("Choose the column where you want to play : ")
+        
+        str_y = input("Choose the row where you want to play : ")
+        while not(str_y.isdigit()) :
+            print("Invalid, try again.")
+            str_y = input("Choose the row where you want to play : ")
+        
+        x = int(str_x)
+        y = int(str_y)
+        
         return y*3 + x
     
 
-    def learn(self, state, action, reward, newState) :
+    def learn(self, state, action, reward) :
         """
         This method makes the agent learns based on what has just happened.
         If the agent isn't capable of learning then it won't do anything.

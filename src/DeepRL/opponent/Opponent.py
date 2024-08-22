@@ -27,7 +27,7 @@ class Opponent() :
     
     
     @abstractmethod
-    def learn(self, state, action, reward, newState) :
+    def learn(self, state, action, reward) :
         """
         This method makes the agent learns based on what has just happened.
         If the agent isn't capable of learning then it won't do anything.

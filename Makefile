@@ -44,7 +44,7 @@ run :
 	@echo ------
 	
 	@python3 -m venv env
-	@. env/bin/activate; pip install tqdm; python3 src
+	@. env/bin/activate; pip install tqdm; pip install numpy; python3 src
 	
 	@echo ------
 	@echo Program ended

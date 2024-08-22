@@ -3,236 +3,167 @@ import math
 from math import exp
 from .Opponent import Opponent
 import csv
+import numpy as np
+from tqdm import tqdm
 
 
-class Neuron :
-    
-    def __init__(self) :
-        self.value = 0
-        self.biais = random.random() * 2 - 1
-        self.prev_synapse = []
-        self.next_synapse = []
-        self.error = 0
-        self.isOutput = False
-    
-    def setPrevSynapse(self, prev_synapse) :
-        self.prev_synapse = prev_synapse
-    
-    def setNextSynapse(self, next_synapse) :
-        self.next_synapse = next_synapse
-    
-    def setBiais(self, biais) :
-        self.biais = biais
-    
-    def getBiais(self) :
-        return self.biais
-    
-    def setValue(self, value) :
-        self.value = value
-    
-    def getValue(self) :
-        return self.value
-    
-    def activation(self) :
-        x = sum([synapse.getValue() for synapse in self.prev_synapse]) + self.biais
-        if self.isOutput :
-            self.value = x
-        else :
-            self.value = 1/(1 + math.exp(-x))
-    
-    def propagate(self) :
-        for synapse in self.next_synapse :
-            synapse.activation()
 
 
-class Synapse :
-    
-    def __init__(self, prevNeuron) :
-        self.value = 0
-        self.weight = random.random() * 2 - 1
-        self.prev_neuron = prevNeuron
-        self.error = 0
-    
-    def setWeight(self, weight) :
-        self.weight = weight
-    
-    def getWeight(self) :
-        return self.weight
-    
-    def getValue(self) :
-        return self.value
-    
-    def activation(self) :
-        self.value = self.prev_neuron.getValue() * self.weight
+def relu(x) :
+    return max(0.004 * x, x)
 
-
+def relu_deriv(x) :
+    if x > 0 :
+        return 1
+    else :
+        return 0.004
 
 class Network :
     
     def __init__(self, layers) :
-        n = len(layers)
-        self.layers = [[Neuron() for _ in range(layers[layerIndex])] for layerIndex in range(n)]
-        self.inputLayer = self.layers[0]
-        self.outputLayer = self.layers[n-1]
-        self.synapse = [[[Synapse(neuron) for _ in range(len(self.layers[layerIndex+1]))] for neuron in self.layers[layerIndex]] for layerIndex in range(n-1)]
-        self.learningRate = 0.1
-        self.batchSize = 128
+        
+        self.layers = layers
+        self.learningRate = 0.0001
+        self.alpha = 0.7
+        self.nbLayers = len(layers)
+        self.input = [np.matrix([0 for _ in range(layers[i + 1])]) for i in range(self.nbLayers - 1)]
+        self.output = [np.matrix([0 for _ in range(layers[i])]) for i in range(self.nbLayers)]
+        self.deriv = [[np.matrix([[0] for _ in range(layers[i + 1])])] for i in range(self.nbLayers - 1)]
+        self.synapse = []
+        self.bias = []
+        self.delta = [np.matrix([[0] for _ in range(layers[i+1])]) for i in range(self.nbLayers - 1)]
+        self.size = layers
+        self.activation_hidden = np.vectorize(relu)
+        self.derivative_hidden = np.vectorize(relu_deriv)
+        self.bufferSize = 10000
+        self.batchSize = 32
+        self.numberOfBatch = self.bufferSize // self.batchSize
+        self.buffer = []
         self.batch = []
+        self.epsilon = 1
+        self.decayRate = 0.00005
+        self.numberOfDecay = 0
+        self.epochs = 1
         
-        for neuronIndex in range(len(self.inputLayer)) :
-            neuron = self.inputLayer[neuronIndex]
-            neuron.setNextSynapse(self.synapse[0][neuronIndex])
+        for layerSize in layers[1:] :
+            self.bias.append(np.matrix([random.random() *2 - 1 for _ in range(layerSize)]))
         
-        for layerIndex in range(1, n-1) :
-            layer = self.layers[layerIndex]
-            layerSize = len(layer)
-            for neuronIndex in range(layerSize) :
-                neuron = layer[neuronIndex]
-                neuron.setNextSynapse(self.synapse[layerIndex][neuronIndex])
-                previousLayerSize = len(self.layers[layerIndex - 1])
-                neuron.setPrevSynapse([self.synapse[layerIndex-1][previousNeuronIndex][neuronIndex] for previousNeuronIndex in range(previousLayerSize)])
+        for i in range(len(layers) - 1) :
+            self.synapse.append(np.matrix([[random.random() * 2 - 1 for _ in range(layers[i+1])] for _ in range(layers[i])]))
         
-        for neuronIndex in range(len(self.outputLayer)) :
-            neuron = self.outputLayer[neuronIndex]
-            neuron.isOutput = True
-            neuron.setPrevSynapse([self.synapse[n-2][previousNeuronIndex][neuronIndex] for previousNeuronIndex in range(len(self.layers[n-2]))])
+    
     
     def propagate(self, state) :
-        for i in range(len(self.inputLayer)) :
-            neuron = self.inputLayer[i]
-            neuron.setValue(state[i])
-            neuron.propagate()
+        self.output[0] = np.matrix(state)
         
-        for layer in self.layers[1:] :
-            for neuron in layer :
-                neuron.activation()
-                neuron.propagate()
+        for i in range(1, self.nbLayers - 1) :
+            self.input[i-1] = (self.output[i-1] @ self.synapse[i-1]) + self.bias[i-1]
+            self.output[i] = self.activation_hidden(self.input[i-1])
         
-        res = []
-        for neuron in self.outputLayer :
-            res.append(neuron.getValue())
-        
-        return res
+        self.input[-1] = (self.output[-2] @ self.synapse[-1]) + self.bias[-1]
+        self.output[-1] = self.input[-1]
+        return self.output[-1].tolist()[0]
     
     
+    def learn_NEW(self, data) :
+        self.buffer.append(data)
+            
+        if len(self.buffer) >= self.bufferSize :
+            for _ in range(self.epochs) :
+                random.shuffle(self.buffer)
+                for i in range(self.numberOfBatch) :
+                    self.batch = self.buffer[i*self.batchSize : (i+1) * self.batchSize]
+                    self.batchLearn(self.batch)
+            self.buffer = []
+            self.decayEpsilon()
     
     def learn(self, data) :
-        for experiment in data :
-            self.propagate(experiment[0])
-            for i in range(len(self.outputLayer)) :
-                neuron = self.outputLayer[i]
-                expectedResult = experiment[1][i]
-                neuron.error = (neuron.value - expectedResult)
+        self.buffer.append(data)
             
-            for layerIndex in range(len(self.layers) - 2, -1, -1) :
-                for neuronIndex in range(len(self.layers[layerIndex])) :
-                    neuron = self.layers[layerIndex][neuronIndex]
-                    
-                    nextError = 0
-                    for nextNeuronIndex in range(len(self.layers[layerIndex + 1])) :
-                        nextError += self.layers[layerIndex + 1][nextNeuronIndex].error * self.synapse[layerIndex][neuronIndex][nextNeuronIndex].weight
-                    neuron.error = neuron.value * (1 - neuron.value) * nextError
-            
-            for neuron in self.outputLayer :
-                neuron.biais = neuron.biais - self.learningRate * neuron.error
-            
-            for layerIndex in range(len(self.layers) -1) :
-                for neuronIndex in range(len(self.layers[layerIndex])) :
-                    neuron = self.layers[layerIndex][neuronIndex]
-                    
-                    neuron.biais = neuron.biais - self.learningRate * neuron.error
-                    
-                    for nextNeuronIndex in range(len(self.layers[layerIndex + 1])) :
-                        nextNeuron = self.layers[layerIndex + 1][nextNeuronIndex]
-                        synapse = self.synapse[layerIndex][neuronIndex][nextNeuronIndex]
-                        
-                        synapse.weight = synapse.weight - self.learningRate * neuron.value * nextNeuron.error
-    
-    
-    
-    
-    def learn_FOR_BATCH(self, data) :
-        self.batch.append(data)
-        if len(self.batch) >= self.batchSize :
+        if len(self.buffer) >= self.bufferSize :
+            for i in range(self.batchSize) :
+                choice = random.randint(0, len(self.buffer)-1)
+                self.batch.append(self.buffer.pop(choice))
+                
             self.batchLearn(self.batch)
             self.batch = []
-        
-    
-    def batchLearn(self, data) :
-        self.reset_errors()
-        n = len(data)
-        
-        k = -1
-        for experiment in data :
-            k += 1
-            self.propagate(experiment[0])
-            for i in range(len(self.outputLayer)) :
-                neuron = self.outputLayer[i]
-                expectedResult = experiment[1][i]
-                neuron.error.append(neuron.value - expectedResult)
-            
-            for layerIndex in range(len(self.layers) - 2, -1, -1) :
-                for neuronIndex in range(len(self.layers[layerIndex])) :
-                    neuron = self.layers[layerIndex][neuronIndex]
-                    
-                    nextError = 0
-                    for nextNeuronIndex in range(len(self.layers[layerIndex + 1])) :
-                        nextError += self.layers[layerIndex + 1][nextNeuronIndex].error[k] * self.synapse[layerIndex][neuronIndex][nextNeuronIndex].weight
-                    neuron.error.append(neuron.value * (1 - neuron.value) * nextError)
-                    
-                    for nextNeuronIndex in range(len(self.layers[layerIndex + 1])) :
-                        nextNeuron = self.layers[layerIndex + 1][nextNeuronIndex]
-                        synapse = self.synapse[layerIndex][neuronIndex][nextNeuronIndex]
-                        synapse.error.append(neuron.value * nextNeuron.error[k])
-            
-        self.calculate_errors(n)
-            
-        for neuron in self.outputLayer :
-            neuron.biais = neuron.biais - self.learningRate * neuron.error
-            
-        for layerIndex in range(len(self.layers) -1) :
-            for neuronIndex in range(len(self.layers[layerIndex])) :
-                neuron = self.layers[layerIndex][neuronIndex]
-                    
-                neuron.biais = neuron.biais - self.learningRate * neuron.error
-                    
-                for nextNeuronIndex in range(len(self.layers[layerIndex + 1])) :
-                    nextNeuron = self.layers[layerIndex + 1][nextNeuronIndex]
-                    synapse = self.synapse[layerIndex][neuronIndex][nextNeuronIndex]
-                        
-                    synapse.weight = synapse.weight - self.learningRate * synapse.error
-    
-                        
-    def reset_errors(self) :
-        for layerIndex in range(len(self.layers)) :
-            for neuronIndex in range(len(self.layers[layerIndex])) :
-                neuron = self.layers[layerIndex][neuronIndex]
-                neuron.error = []
-        
-        for layerIndex in range(len(self.layers) - 1) :
-            for neuronIndex in range(len(self.layers[layerIndex])) :
-                for nextNeuronIndex in range(len(self.layers[layerIndex + 1])) :
-                    synapse = self.synapse[layerIndex][neuronIndex][nextNeuronIndex]
-                    synapse.error = []
+            self.decayEpsilon()
     
     
-    def calculate_errors(self, divider) :
-        for layerIndex in range(len(self.layers)) :
-            for neuronIndex in range(len(self.layers[layerIndex])) :
-                neuron = self.layers[layerIndex][neuronIndex]
-                neuron.error = sum(neuron.error) / divider
+    def batchLearn(self, batch) :
+        batchDelta = [np.matrix([[0.0] for _ in range(self.layers[i+1])]) for i in range(self.nbLayers - 1)]
+        batchSynapseDelta = [np.matrix([[0.0 for _ in range(self.layers[i+1])] for _ in range(self.layers[i])]) for i in range(self.nbLayers -1)]
         
-        for layerIndex in range(len(self.layers) - 1) :
-            for neuronIndex in range(len(self.layers[layerIndex])) :
-                for nextNeuronIndex in range(len(self.layers[layerIndex + 1])) :
-                    synapse = self.synapse[layerIndex][neuronIndex][nextNeuronIndex]
-                    synapse.error = sum(synapse.error) / divider
+        for data in batch :
+            target = self.propagate(data[0])
+            action = data[1]
+            reward = data[2]
+            expectedCumulativeReward = target[action]
+            error = reward - expectedCumulativeReward
+            target[action] = expectedCumulativeReward + self.alpha * error
+            
+            
+            for i in range(1, self.nbLayers- 1) :
+                self.deriv[i-1] = self.derivative_hidden(self.input[i-1]).transpose()
+            self.deriv[-1] = np.ones_like(self.input[-1]).transpose()
+            
+            
+            self.delta[-1] = (self.output[-1] - target).transpose()
+            for i in range(self.nbLayers - 3, -1, -1) :
+                nextError = self.synapse[i+1] @ self.delta[i+1]
+                self.delta[i] = np.multiply(self.deriv[i], nextError)
+
+            synapseDelta = []
+
+            for i in range(self.nbLayers - 1) :
+                outRepeat = np.repeat(self.output[i].transpose(), repeats = self.delta[i].shape[1], axis = 1)
+                errorRepeat = np.repeat(self.delta[i].transpose(), repeats = len(self.output[i]), axis = 0)
+                synapseDelta.append(np.multiply(outRepeat, errorRepeat))
+            
+            
+            for i in range(len(batchDelta)) :
+                batchDelta[i] += self.delta[i]
+            
+            for i in range(len(batchSynapseDelta)) :
+                batchSynapseDelta[i] += synapseDelta[i]
+
+
+        for i in range(len(batchDelta)) :
+            batchDelta[i] /= self.batchSize
+        
+        for i in range(len(batchSynapseDelta)) :
+            batchSynapseDelta[i] /= self.batchSize
+
+
+        for i in range(self.nbLayers - 1) :
+            self.bias[i] -= self.learningRate * batchDelta[i].transpose()
+            
+        for i in range(self.nbLayers - 1) :
+            self.synapse[i] -= self.learningRate * batchSynapseDelta[i]
+    
+    
+    def setEpsilon(self, n) :
+        self.epsilon = n + 0.05
+    
+    
+    def decayEpsilon(self) :
+        """
+        Decays the epsilon, less exploration and more exploitation
+        """
+        self.epsilon = 0.05 + 0.95 * exp(-1 * self.decayRate * self.numberOfDecay)
+        self.numberOfDecay += 1
+
+
+
+
+
+
 
 
 class DQN(Opponent) :
     
     
-    __ANN = Network([9, 4, 8, 8, 4, 9])
+    __ANN = Network([9, 200, 200, 9])
     
     
     def __init__(self, symbole, trainingMode) :
@@ -243,10 +174,6 @@ class DQN(Opponent) :
         """
         super().__init__(symbole)
         self.trainingMode = trainingMode
-        self.__epsilon = 1
-        self.__decayRate = 0.0005
-        self.__numberOfDecay = 0
-        self.__discountFactor = 0.99
         self.__learningRate = 0.7
     
     
@@ -264,7 +191,7 @@ class DQN(Opponent) :
         return action
     
     
-    def learn(self, state, action, reward, newState) :
+    def learn(self, state, action, reward) :
         """
         Updates the QTable using TDLearning
         :param: state The initial state as a grid of Cell where the action has been taken
@@ -272,35 +199,90 @@ class DQN(Opponent) :
         :param: reward The immediate reward obtained
         :param: newState The state as a grid of Cell of the env once the other opponent played
         """
-        initialState = self._linearState(state)
-        finalState = self._linearState(newState)
+        DQN.__ANN.learn((self._linearState(state), action, reward))
         
-        nextAction = self.__greedyPolicy(finalState)
-        calculatedCumulativeReward = reward + self.__discountFactor * DQN.__ANN.propagate(finalState)[nextAction]
         
-        expectations = DQN.__ANN.propagate(initialState)
-        expectedCumulativeReward = expectations[action]
-        error = calculatedCumulativeReward - expectedCumulativeReward
+    @staticmethod
+    def importData() :
+        filename = 'weight-layer'
+        for i in range(len(DQN.__ANN.synapse)) :
+            #Does NOT need to be closed since it is npy file
+            DQN.__ANN.synapse[i] = np.load('models/DQN/' + filename + str(i) + '.npy', allow_pickle = False)
         
-        target = expectations
-        target[action] = expectedCumulativeReward + self.__learningRate * error
-        
-        DQN.__ANN.learn([(initialState, target)])
+        filename = 'bias-layer'
+        for i in range(len(DQN.__ANN.bias)) :
+            DQN.__ANN.bias[i] = np.load('models/DQN/' + filename + str(i) + '.npy', allow_pickle = False)
+            
         
     
     @staticmethod
-    def importQTable() :
+    def exportData() :
+        filename = 'weight-layer'
+        for i in range(len(DQN.__ANN.synapse)) :
+            np.save('models/DQN/'+ filename + str(i), DQN.__ANN.synapse[i], allow_pickle=False) # Keep allow_pickle=False for security !!!!
+        
+        filename = 'bias-layer'
+        for i in range(len(DQN.__ANN.bias)) :
+            np.save('models/DQN/' + filename + str(i), DQN.__ANN.bias[i], allow_pickle=False)
+    
+    @staticmethod
+    def importData_OLD() :
         """
         Imports the QTable
         """
-        pass
+        with open('models/DQN.csv', 'r') as file :
+            reader = csv.reader(file, quoting=csv.QUOTE_NONNUMERIC)
+            
+            size = len(DQN.__ANN.layers)
+            for i in range(size) :
+                layerSize = len(DQN.__ANN.layers[i])
+                bias = list(next(reader))
+                for j in range(layerSize) :
+                    DQN.__ANN.layers[i][j].biais = bias[j]
+            
+            size = len(DQN.__ANN.synapse)
+            for i in range(size) :
+                layerSize = len(DQN.__ANN.synapse[i])
+                for j in range(layerSize) :
+                    nbSynapse = len(DQN.__ANN.synapse[i][j])
+                    weights = list(next(reader))
+                    for k in range(nbSynapse) :
+                        DQN.__ANN.synapse[i][j][k].weight = weights[k]
+                
+    
     
     @staticmethod
-    def exportQTable() :
+    def exportData_OLD() :
         """
         Exports the QTable
         """
-        pass
+        size = len(DQN.__ANN.layers)
+        bias = [[] for _ in range(size)]
+        for i in range(size) :
+            layerSize = len(DQN.__ANN.layers[i])
+            for j in range(layerSize) :
+                bias[i].append(DQN.__ANN.layers[i][j].biais)
+        
+        size = len(DQN.__ANN.synapse)
+        weights = [[] for _ in range(size)]
+        for i in range(size) :
+            layerSize = len(DQN.__ANN.synapse[i])
+            weights[i] = [[] for _ in range(layerSize)]
+            for j in range(layerSize) :
+                nbSynapse = len(DQN.__ANN.synapse[i][j])
+                for k in range(nbSynapse) :
+                    weights[i][j].append(DQN.__ANN.synapse[i][j][k].weight)
+        
+        with open('models/DQN.csv', 'w') as file :
+            writer = csv.writer(file)
+            writer.writerows(bias)
+            
+            for data in weights :
+                writer.writerows(data)
+                    
+            
+            
+        
     
     @staticmethod
     def resetQTable() :
@@ -308,13 +290,6 @@ class DQN(Opponent) :
         Resets the QTable
         """
         pass
-
-    def decayEpsilon(self) :
-        """
-        Decays the epsilon, less exploration and more exploitation
-        """
-        self.__epsilon = 0.05 + 0.95 * exp(-1 * self.__decayRate * self.__numberOfDecay)
-        self.__numberOfDecay += 1
 
 
     def __greedyPolicy(self, state) :
@@ -342,8 +317,9 @@ class DQN(Opponent) :
         :param: state The state as an int where the action has to be taken.
         :return: An int describing the action
         """
-        if random.uniform(0, 1) <= self.__epsilon :
+        if random.uniform(0, 1) <= DQN.__ANN.epsilon :
             return random.randint(0, 8)
         else :
             return self.__greedyPolicy(state)
+        
 

@@ -87,36 +87,84 @@ def navigate_trainingMenu() :
         case 0 :
             OPP1 = QLearningTTT('X', True)
             OPP2 = QLearningTTT('O', True)
+            trainingGames = int(input("Enter here number of training games : "))
+            for i in tqdm(range(trainingGames), desc = "Training...") :
+                runGame(False)
         case 1 :
-            OPP1 = DQN('X', True)
-            OPP2 = DQN('O', True)
-    
-    
-    trainingGames = int(input("Enter here number of training games : "))
-    for i in tqdm(range(trainingGames), desc = "Training...") :
-        runGame(False)
-        OPP1.decayEpsilon()
-        OPP2.decayEpsilon()
+            
+            print("Choose opponent for training : ")
+            print("0 : Random")
+            print("1 : Q-LearningTTT")
+            x = int(input("Input here : "))
+            
+            trainingGames = int(input("Enter here number of training games : "))
+            
+            
+            match x :
+                case 0 :
+                    for i in tqdm(range(trainingGames), desc = "Training...") :
+                        OPP1 = DQN('X', True)
+                        OPP2 = RandomPlayer('O')
+                        runGame(False)
+                        
+                        OPP1 = RandomPlayer('X')
+                        OPP2 = DQN('O', True)
+                        runGame(False)
+                
+                case 1 :
+                    for i in tqdm(range(trainingGames), desc = "Training...") :
+                        OPP1 = DQN('X', True)
+                        OPP2 = QLearningTTT('O', False)
+                        runGame(False)
+                        
+                        OPP1 = QLearningTTT('X', False)
+                        OPP2 = DQN('O', True)
+                        runGame(False)
+                
+            print(DQN._DQN__ANN.epsilon)
+                
+            
+            
+        
+
+
         
     print("Training Completed")
     navigate_mainMenu()
 
 def navigate_importMenu() :
     print('---Import/Export---')
-    print('0 : Reset')
-    print('1 : Import')
-    print('2 : Export')
-    x = int(input('Enter here : '))
     
+    print('0 : QLearningTTT')
+    print('1 : DQN')
+    x = int(input('Enter here : '))
     match x :
         case 0 :
-            QLearningTTT.resetQTable()
+            print('0 : Reset')
+            print('1 : Import')
+            print('2 : Export')
+            x = int(input('Enter here : '))
+            
+            match x :
+                case 0 :
+                    QLearningTTT.resetQTable()
+                
+                case 1 :
+                    QLearningTTT.importQTable()
+                
+                case 2:
+                    QLearningTTT.exportQTable()
         
         case 1 :
-            QLearningTTT.importQTable()
-        
-        case 2:
-            QLearningTTT.exportQTable()
+            print('0 : Import')
+            print('1 : Export')
+            x = int(input('Enter here : '))
+            
+            match x :
+                case 0 :
+                    DQN.importData()
+                case 1 :
+                    DQN.exportData()
     
     navigate_mainMenu()
             
@@ -180,8 +228,6 @@ def mainExport() :
     OPP2 = QLearningTTT('O', True)
     for i in range(trainingGames) :
         runGame(False)
-        OPP1.decayEpsilon()
-        OPP2.decayEpsilon()
         
         print(f"{i/trainingGames*100} %")
     print("Training Completed")

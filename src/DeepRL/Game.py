@@ -18,6 +18,7 @@ class Game() :
         self.__OPPONENT2 = opp2
         self.__activeOpponent = opp1
         self.verbose = verbose
+        self.diminFactor = 0.8
     
     
     def play(self) :
@@ -25,6 +26,10 @@ class Game() :
         This method permits to run the game.
         Rewards are managed to make sure both AIs can train at the same time by playing against each other.
         """
+        
+        opp1History = []
+        opp2History = []
+        
         # Initialize first round
         firstRoundFinished = False
         newState1 = self.getState()
@@ -45,16 +50,18 @@ class Game() :
                 # Play until choosing a valid action
                 while reward1 == -100 :
                     # Agent learns he took an invalid action
-                    self.__activeOpponent.learn(state1, action1, reward1, newState2)
+                    self.__activeOpponent.learn(state1, action1, reward1)
                     # Plays once again
                     action1 = self.__activeOpponent.makeAction(state1)
                     reward1, newState2 = self.__step(action1)
                 # If opp2 played then he learns
                 if firstRoundFinished :
-                    self.__OPPONENT2.learn(state2, action2, -1 * reward1, newState2)
+                    #self.__OPPONENT2.learn(state2, action2, -1 * reward1, newState2)
+                    opp2History.append((state2, action2))
             else :
                 # Opponent 2 finished the game
-                self.__OPPONENT2.learn(state2, action2, reward2, newState1)
+                #self.__OPPONENT2.learn(state2, action2, reward2, newState1)
+                opp2History.append((state2, action2))
                 break
             
             firstRoundFinished = True
@@ -72,16 +79,40 @@ class Game() :
                 # Play until choosing a valid action
                 while reward2 == -100 :
                     # Agent learns he took an invalid action
-                    self.__activeOpponent.learn(state2, action2, reward2, newState1)
+                    self.__activeOpponent.learn(state2, action2, reward2)
                     # Plays once again
                     action2 = self.__activeOpponent.makeAction(state2)
                     reward2, newState1 = self.__step(action2)
                 # At the end of Opp2's turn Opp1 learns
-                self.__OPPONENT1.learn(state1, action1, -1 * reward2, newState1)
+                #self.__OPPONENT1.learn(state1, action1, -1 * reward2, newState1)
+                opp1History.append((state1, action1))
             else :
                 # Opponent 1 finished the game
-                self.__OPPONENT1.learn(state1, action1, reward1, newState2)
+                #self.__OPPONENT1.learn(state1, action1, reward1, newState2)
+                opp1History.append((state1, action1))
                 break
+        
+        
+        winner = self.getWinner()
+        if winner == self.__OPPONENT1 :
+            reward = 1
+        elif winner == self.__OPPONENT2 :
+            reward = -1
+        else :
+            reward = 0
+        
+        
+        n = len(opp1History)
+        for record in opp1History :
+            n -= 1
+            self.__OPPONENT1.learn(record[0], record[1], reward * (self.diminFactor**n))
+        
+        reward *= -1
+        
+        n = len(opp2History)
+        for record in opp2History :
+            n -= 1
+            self.__OPPONENT2.learn(record[0], record[1], reward * (self.diminFactor**n))
         
         #End of the game
     
@@ -119,17 +150,13 @@ class Game() :
         x, y = (action % 3, action // 3)
         
         if self.__BOARD.getCell(x, y).getOwner() is not None :
+            if self.verbose :
+                print("INVALID MOVE")
             return -100, self.getState()
         
         self.__BOARD.capture(x, y, self.__activeOpponent)
-        winner = self.getWinner()
         
-        if winner is None :
-            return 0, self.getState()
-        elif winner == self.__activeOpponent :
-            return 1, self.getState()
-        else :
-            return -1, self.getState()
+        return 0, self.getState()
         
     
     
