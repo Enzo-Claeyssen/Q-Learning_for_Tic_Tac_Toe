@@ -102,17 +102,19 @@ class Game() :
             reward = 0
         
         
-        n = len(opp1History)
-        for record in opp1History :
-            n -= 1
-            self.__OPPONENT1.learn(record[0], record[1], reward * (self.diminFactor**n))
+        if self.__OPPONENT1.trainingMode :
+            n = len(opp1History)
+            for record in opp1History :
+                n -= 1
+                self.__OPPONENT1.learn(record[0], record[1], reward * (self.diminFactor**n))
         
         reward *= -1
         
-        n = len(opp2History)
-        for record in opp2History :
-            n -= 1
-            self.__OPPONENT2.learn(record[0], record[1], reward * (self.diminFactor**n))
+        if self.__OPPONENT2.trainingMode :
+            n = len(opp2History)
+            for record in opp2History :
+                n -= 1
+                self.__OPPONENT2.learn(record[0], record[1], reward * (self.diminFactor**n))
         
         #End of the game
     

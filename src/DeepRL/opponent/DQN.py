@@ -10,20 +10,32 @@ from tqdm import tqdm
 
 
 def relu(x) :
+    """
+    Relu function used as activation function.
+    """
     return max(0.004 * x, x)
 
 def relu_deriv(x) :
+    """
+    Derivative of ReLu
+    """
     if x > 0 :
         return 1
     else :
         return 0.004
 
 class Network :
+    """
+    Represents the whole artificial neural network
+    """
     
     def __init__(self, layers) :
+        """
+        Initialize the network.
+        """
         
         self.layers = layers
-        self.learningRate = 0.0001
+        self.learningRate = 0.0008
         self.alpha = 0.7
         self.nbLayers = len(layers)
         self.input = [np.matrix([0 for _ in range(layers[i + 1])]) for i in range(self.nbLayers - 1)]
@@ -36,12 +48,12 @@ class Network :
         self.activation_hidden = np.vectorize(relu)
         self.derivative_hidden = np.vectorize(relu_deriv)
         self.bufferSize = 10000
-        self.batchSize = 32
+        self.batchSize = 64
         self.numberOfBatch = self.bufferSize // self.batchSize
         self.buffer = []
         self.batch = []
         self.epsilon = 1
-        self.decayRate = 0.00005
+        self.decayRate = 0.000005
         self.numberOfDecay = 0
         self.epochs = 1
         
@@ -54,6 +66,9 @@ class Network :
     
     
     def propagate(self, state) :
+        """
+        Proceeds to the feed forward.
+        """
         self.output[0] = np.matrix(state)
         
         for i in range(1, self.nbLayers - 1) :
@@ -78,6 +93,9 @@ class Network :
             self.decayEpsilon()
     
     def learn(self, data) :
+        """
+        Permits to add experiments to the buffer and backpropagate when needed.
+        """
         self.buffer.append(data)
             
         if len(self.buffer) >= self.bufferSize :
@@ -91,6 +109,9 @@ class Network :
     
     
     def batchLearn(self, batch) :
+        """
+        The backpropagation process.
+        """
         batchDelta = [np.matrix([[0.0] for _ in range(self.layers[i+1])]) for i in range(self.nbLayers - 1)]
         batchSynapseDelta = [np.matrix([[0.0 for _ in range(self.layers[i+1])] for _ in range(self.layers[i])]) for i in range(self.nbLayers -1)]
         
@@ -142,10 +163,6 @@ class Network :
             self.synapse[i] -= self.learningRate * batchSynapseDelta[i]
     
     
-    def setEpsilon(self, n) :
-        self.epsilon = n + 0.05
-    
-    
     def decayEpsilon(self) :
         """
         Decays the epsilon, less exploration and more exploitation
@@ -193,7 +210,7 @@ class DQN(Opponent) :
     
     def learn(self, state, action, reward) :
         """
-        Updates the QTable using TDLearning
+        Updates the network
         :param: state The initial state as a grid of Cell where the action has been taken
         :param: action The action that has been made
         :param: reward The immediate reward obtained
@@ -224,72 +241,6 @@ class DQN(Opponent) :
         filename = 'bias-layer'
         for i in range(len(DQN.__ANN.bias)) :
             np.save('models/DQN/' + filename + str(i), DQN.__ANN.bias[i], allow_pickle=False)
-    
-    @staticmethod
-    def importData_OLD() :
-        """
-        Imports the QTable
-        """
-        with open('models/DQN.csv', 'r') as file :
-            reader = csv.reader(file, quoting=csv.QUOTE_NONNUMERIC)
-            
-            size = len(DQN.__ANN.layers)
-            for i in range(size) :
-                layerSize = len(DQN.__ANN.layers[i])
-                bias = list(next(reader))
-                for j in range(layerSize) :
-                    DQN.__ANN.layers[i][j].biais = bias[j]
-            
-            size = len(DQN.__ANN.synapse)
-            for i in range(size) :
-                layerSize = len(DQN.__ANN.synapse[i])
-                for j in range(layerSize) :
-                    nbSynapse = len(DQN.__ANN.synapse[i][j])
-                    weights = list(next(reader))
-                    for k in range(nbSynapse) :
-                        DQN.__ANN.synapse[i][j][k].weight = weights[k]
-                
-    
-    
-    @staticmethod
-    def exportData_OLD() :
-        """
-        Exports the QTable
-        """
-        size = len(DQN.__ANN.layers)
-        bias = [[] for _ in range(size)]
-        for i in range(size) :
-            layerSize = len(DQN.__ANN.layers[i])
-            for j in range(layerSize) :
-                bias[i].append(DQN.__ANN.layers[i][j].biais)
-        
-        size = len(DQN.__ANN.synapse)
-        weights = [[] for _ in range(size)]
-        for i in range(size) :
-            layerSize = len(DQN.__ANN.synapse[i])
-            weights[i] = [[] for _ in range(layerSize)]
-            for j in range(layerSize) :
-                nbSynapse = len(DQN.__ANN.synapse[i][j])
-                for k in range(nbSynapse) :
-                    weights[i][j].append(DQN.__ANN.synapse[i][j][k].weight)
-        
-        with open('models/DQN.csv', 'w') as file :
-            writer = csv.writer(file)
-            writer.writerows(bias)
-            
-            for data in weights :
-                writer.writerows(data)
-                    
-            
-            
-        
-    
-    @staticmethod
-    def resetQTable() :
-        """
-        Resets the QTable
-        """
-        pass
 
 
     def __greedyPolicy(self, state) :

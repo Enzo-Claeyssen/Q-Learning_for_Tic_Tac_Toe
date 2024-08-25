@@ -1,7 +1,7 @@
 # Works only on Linux (due to makefile)
 
 # DeepRLTesting
-Using RL and DeepRL algorithms to create models able to play generalized versions of Power4 and TicTacToe
+Using RL and DeepRL algorithms to create models able to play TicTacToe
 
 
 ## How to use ?

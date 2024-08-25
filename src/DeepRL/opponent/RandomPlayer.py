@@ -12,6 +12,7 @@ class RandomPlayer(Opponent) :
         :Param: symbole The symbole associated with cells captured by this opponent
         """
         super().__init__(symbole)
+        self.trainingMode = False
     
     def makeAction(self, state) :
         """

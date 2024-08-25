@@ -97,11 +97,24 @@ def navigate_trainingMenu() :
             print("1 : Q-LearningTTT")
             x = int(input("Input here : "))
             
-            trainingGames = int(input("Enter here number of training games : "))
+            #trainingGames = int(input("Enter here number of training games : "))
+            nbLearningTargeted = int(input("Enter here target value for number of training : "))
             
             
             match x :
                 case 0 :
+                    
+                    for i in tqdm(range(nbLearningTargeted), desc = "Training...") :
+                        while DQN._DQN__ANN.numberOfDecay < i :
+                            OPP1 = DQN('X', True)
+                            OPP2 = RandomPlayer('O')
+                            runGame(False)
+                            
+                            OPP1 = RandomPlayer('X')
+                            OPP2 = DQN('O', True)
+                            runGame(False)
+                    
+                    """
                     for i in tqdm(range(trainingGames), desc = "Training...") :
                         OPP1 = DQN('X', True)
                         OPP2 = RandomPlayer('O')
@@ -110,6 +123,7 @@ def navigate_trainingMenu() :
                         OPP1 = RandomPlayer('X')
                         OPP2 = DQN('O', True)
                         runGame(False)
+                    """
                 
                 case 1 :
                     for i in tqdm(range(trainingGames), desc = "Training...") :
@@ -120,13 +134,51 @@ def navigate_trainingMenu() :
                         OPP1 = QLearningTTT('X', False)
                         OPP2 = DQN('O', True)
                         runGame(False)
+            
+            win = 0
+            loose = 0
+            null = 0
+            for i in tqdm(range(1000), desc = "Evaluate Step 1/2...") :
+                OPP1 = DQN('X', False)
+                OPP2 = RandomPlayer('O')
+                winner = runGame(False)
                 
-            print(DQN._DQN__ANN.epsilon)
-                
+                if winner is None :
+                    null += 1
+                elif winner == OPP1 :
+                    win += 1
+                else :
+                    loose += 1
+            
+            perWinAsX = win // 10
+            perNullAsX = null // 10
+            perLooseAsX = loose // 10
             
             
-        
-
+            win = 0
+            loose = 0
+            null = 0
+            for i in tqdm(range(1000), desc = "Evaluate Step 2/2...") :
+                OPP1 = RandomPlayer('X')
+                OPP2 = DQN('O', False)
+                winner = runGame(False)
+                
+                if winner is None :
+                    null += 1
+                elif winner == OPP2 :
+                    win += 1
+                else :
+                    loose += 1
+            
+            perWinAsO = win // 10
+            perNullAsO = null // 10
+            perLooseAsO = loose // 10
+            
+            print("Percents of win/null/loose against random (rounded approximate)")
+            print(f"As first player : {perWinAsX}%, {perNullAsX}%, {perLooseAsX}%")
+            print(f"As second player : {perWinAsO}%, {perNullAsO}%, {perLooseAsO}%")                
+            
+            
 
         
     print("Training Completed")
@@ -209,6 +261,7 @@ def runGame(verbose = True) :
     GAME.play()
     if verbose :
         printWinner()
+    return GAME.getWinner()
 
 def printWinner() :
     winner = GAME.getWinner()

@@ -11,6 +11,7 @@ class Player(Opponent) :
         :param: symbole The symbole representing cells of this player
         """
         super().__init__(symbole)
+        self.trainingMode = False
     
     
     def makeAction(self, state) :
