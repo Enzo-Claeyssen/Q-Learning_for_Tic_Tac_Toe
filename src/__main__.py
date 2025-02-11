@@ -97,7 +97,6 @@ def navigate_trainingMenu() :
             print("1 : Q-LearningTTT")
             x = int(input("Input here : "))
             
-            #trainingGames = int(input("Enter here number of training games : "))
             nbLearningTargeted = int(input("Enter here target value for number of training : "))
             
             
@@ -126,14 +125,15 @@ def navigate_trainingMenu() :
                     """
                 
                 case 1 :
-                    for i in tqdm(range(trainingGames), desc = "Training...") :
-                        OPP1 = DQN('X', True)
-                        OPP2 = QLearningTTT('O', False)
-                        runGame(False)
-                        
-                        OPP1 = QLearningTTT('X', False)
-                        OPP2 = DQN('O', True)
-                        runGame(False)
+                    for i in tqdm(range(nbLearningTargeted), desc = "Training...") :
+                        while DQN._DQN__ANN.numberOfDecay < i :
+                            OPP1 = DQN('X', True)
+                            OPP2 = QLearningTTT('O', False)
+                            runGame(False)
+                            
+                            OPP1 = QLearningTTT('X', False)
+                            OPP2 = DQN('O', True)
+                            runGame(False)
             
             win = 0
             loose = 0
@@ -178,8 +178,7 @@ def navigate_trainingMenu() :
             print(f"As first player : {perWinAsX}%, {perNullAsX}%, {perLooseAsX}%")
             print(f"As second player : {perWinAsO}%, {perNullAsO}%, {perLooseAsO}%")                
             
-            
-
+        
         
     print("Training Completed")
     navigate_mainMenu()
