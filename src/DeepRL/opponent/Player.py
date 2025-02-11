@@ -20,20 +20,20 @@ class Player(Opponent) :
         :param: state The actual state of the game as a grid of Cell
         :return: An int describing the decision.
         """
-        str_x = input("Choose the column where you want to play : ")
+        str_x = input("Choose the row where you want to play : ")
         while not(str_x.isdigit()) :
             print("Invalid, try again.")
-            str_x = input("Choose the column where you want to play : ")
+            str_x = input("Choose the row where you want to play : ")
         
-        str_y = input("Choose the row where you want to play : ")
+        str_y = input("Choose the column where you want to play : ")
         while not(str_y.isdigit()) :
             print("Invalid, try again.")
-            str_y = input("Choose the row where you want to play : ")
+            str_y = input("Choose the column where you want to play : ")
         
         x = int(str_x)
         y = int(str_y)
         
-        return y*3 + x
+        return x*3 + y
     
 
     def learn(self, state, action, reward) :
