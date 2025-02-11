@@ -17,8 +17,26 @@ class Game() :
         self.__OPPONENT1 = opp1
         self.__OPPONENT2 = opp2
         self.__activeOpponent = opp1
+        self.__notActiveOpponent = opp2
         self.verbose = verbose
         self.diminFactor = 0.8
+        
+        self.__opp1History = []
+        self.__opp2History = []
+    
+    
+    def changeActiveOpponent(self) :
+        """
+        Switches the active opponent of the game.
+        The active opponent is the one who will capture a case next time a round is played.
+        """
+        if self.__activeOpponent == self.__OPPONENT1 :
+            self.__activeOpponent = self.__OPPONENT2
+            self.__notActiveOpponent = self.__OPPONENT1
+        else :
+            self.__activeOpponent = self.__OPPONENT1
+            self.__notActiveOpponent = self.__OPPONENT2
+    
     
     
     def play(self) :
@@ -26,73 +44,68 @@ class Game() :
         This method permits to run the game.
         Rewards are managed to make sure both AIs can train at the same time by playing against each other.
         """
-        
-        opp1History = []
-        opp2History = []
-        
-        # Initialize first round
         firstRoundFinished = False
-        newState1 = self.getState()
         
-        while True :
+        while not self.isFinished() :
             
             if self.verbose :
                 print("")
                 self.__BOARD.printBoard()
                 print("")
             
-            if not self.isFinished() :
-                # Opponent 1 plays
-                self.__activeOpponent = self.__OPPONENT1
-                state1 = newState1
-                action1 = self.__activeOpponent.makeAction(state1)
-                reward1, newState2 = self.__step(action1)
-                # Play until choosing a valid action
-                while reward1 == -100 :
-                    # Agent learns he took an invalid action
-                    self.__activeOpponent.learn(state1, action1, reward1)
-                    # Plays once again
-                    action1 = self.__activeOpponent.makeAction(state1)
-                    reward1, newState2 = self.__step(action1)
-                # If opp2 played then he learns
-                if firstRoundFinished :
-                    #self.__OPPONENT2.learn(state2, action2, -1 * reward1, newState2)
-                    opp2History.append((state2, action2))
-            else :
-                # Opponent 2 finished the game
-                #self.__OPPONENT2.learn(state2, action2, reward2, newState1)
-                opp2History.append((state2, action2))
-                break
-            
-            firstRoundFinished = True
-            if self.verbose :
-                print("")
-                self.__BOARD.printBoard()
-                print("")
-            
-            if not self.isFinished() :
-                # Opponent 2 plays
-                self.__activeOpponent = self.__OPPONENT2
-                state2 = newState2
-                action2 = self.__activeOpponent.makeAction(state2)
-                reward2, newState1 = self.__step(action2)
-                # Play until choosing a valid action
-                while reward2 == -100 :
-                    # Agent learns he took an invalid action
-                    self.__activeOpponent.learn(state2, action2, reward2)
-                    # Plays once again
-                    action2 = self.__activeOpponent.makeAction(state2)
-                    reward2, newState1 = self.__step(action2)
-                # At the end of Opp2's turn Opp1 learns
-                #self.__OPPONENT1.learn(state1, action1, -1 * reward2, newState1)
-                opp1History.append((state1, action1))
-            else :
-                # Opponent 1 finished the game
-                #self.__OPPONENT1.learn(state1, action1, reward1, newState2)
-                opp1History.append((state1, action1))
-                break
+            state = self.getState()
+            action, reward = self.play_one_round()
+            self.addToHistory((state, action), self.__activeOpponent)
+
+            self.changeActiveOpponent()
         
-        
+        # Needs to print the final board.
+        if self.verbose :
+            print("")
+            self.__BOARD.printBoard()
+            print("")
+        self.opponentLearnsFromGameHistory()
+    
+
+
+    def play_one_round(self) :
+        """
+        The active opponent plays once.
+        """
+        if not self.isFinished() : 								# Cannot play if game is already finished.
+            state = self.getState()
+            action = self.__activeOpponent.makeAction(state)	# Active agent choose which action to make
+            reward, newState = self.__step(action)			# The game verifies action's integrity (avoiding cheat), applies the action and returns the immediate reward.
+            
+            while reward == -100 :							# Active opponent tried to cheat, invalid move, game's state has not changed.
+                self.__activeOpponent.learn(state, action, reward)	# Learns not to cheat.
+                # Active opponent makes a new move
+                action = self.__activeOpponent.makeAction(state)
+                reward, newState = self.__step(action)
+            
+            return action, reward
+        return None, None
+
+
+
+
+
+    def addToHistory(self, record, opponent) :
+        """
+        Adds the recod : (state, action) to game history of the opponent.
+        """
+        if opponent == self.__OPPONENT1 :
+            self.__opp1History.append(record)
+        else :
+            self.__opp2History.append(record)
+
+
+    
+    def opponentLearnsFromGameHistory(self) :
+        """
+        Depending on the result of the game,
+        both opponents learn depending on what they have done during this game.
+        """
         winner = self.getWinner()
         if winner == self.__OPPONENT1 :
             reward = 1
@@ -101,22 +114,20 @@ class Game() :
         else :
             reward = 0
         
-        
         if self.__OPPONENT1.trainingMode :
-            n = len(opp1History)
-            for record in opp1History :
+            n = len(self.__opp1History)
+            for record in self.__opp1History :
                 n -= 1
                 self.__OPPONENT1.learn(record[0], record[1], reward * (self.diminFactor**n))
         
-        reward *= -1
+        reward *= -1			# If opponent1 won/lost then opponent2 lost/won it reverses rewards.
         
         if self.__OPPONENT2.trainingMode :
-            n = len(opp2History)
-            for record in opp2History :
+            n = len(self.__opp2History)
+            for record in self.__opp2History :
                 n -= 1
                 self.__OPPONENT2.learn(record[0], record[1], reward * (self.diminFactor**n))
-        
-        #End of the game
+
     
     
     def isFinished(self) :
@@ -124,10 +135,10 @@ class Game() :
         Verifies if the game is finished
         :returns: True if the game is finished, False otherwise
         """
-        winnerExists = not self.getWinner() is None
+        winnerExists = not self.getWinner() is None	# Verifies if somebody has won
         if winnerExists:
             return True
-        else :
+        else :										# Verifies that not all cases are captured
             for y in range(3) :
                 for x in range(3) :
                     if self.__BOARD.getCell(x, y).getOwner() is None :
