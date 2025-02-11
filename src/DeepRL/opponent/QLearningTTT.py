@@ -9,6 +9,8 @@ class QLearningTTT(Opponent) :
     QLearning to play tic tac toe
     """
     
+    __NUMBER_OF_ACTIONS = 9 	# There are 9 possible actions (9 cases -> 9 choices available)
+    __NUMBER_OF_STATES = 19683 	# There are 9! possible states for Tic Tac Toe's board.
     __QTable = [[0 for _ in range(9)] for _ in range(19683)]
     
     
@@ -33,7 +35,7 @@ class QLearningTTT(Opponent) :
         :return: An int representing the action
         """
         processed = self._processState(state)
-        if self.trainingMode :
+        if self.trainingMode :					# Q-Learning is off policy, used policy depends on if Agent on training or not.
             action = self.__epsilonGreedyPolicy(processed)
         else :
             action = self.__greedyPolicy(processed)
@@ -55,6 +57,8 @@ class QLearningTTT(Opponent) :
         
         QLearningTTT.__QTable[initialState][action] = expectedCumulativeReward + self.__learningRate * (error)
         self.decayEpsilon()
+    
+    
     
     @staticmethod
     def importQTable() :
@@ -81,7 +85,7 @@ class QLearningTTT(Opponent) :
         """
         Resets the QTable
         """
-        QLearningTTT.__QTable = [[0 for _ in range(9)] for _ in range(19683)]
+        QLearningTTT.__QTable = [[0 for _ in range(QLearningTTT.__NUMBER_OF_ACTIONS)] for _ in range(QLearningTTT.__NUMBER_OF_STATES)]
     
     
     def decayEpsilon(self) :
@@ -101,7 +105,7 @@ class QLearningTTT(Opponent) :
         possibilities = QLearningTTT.__QTable[state]
         maxi = possibilities[0]
         maxi_i = 0
-        for i in range(1, 9) :
+        for i in range(1, QLearningTTT.__NUMBER_OF_ACTIONS) :
             tmp = possibilities[i]
             if tmp > maxi :
                 maxi = tmp
@@ -118,6 +122,6 @@ class QLearningTTT(Opponent) :
         :return: An int describing the action
         """
         if random.uniform(0, 1) <= self.__epsilon :
-            return random.randint(0, 8)
+            return random.randint(0, self.__NUMBER_OF_ACTIONS -1)	# Minus 1 because upper bound is included
         else :
             return self.__greedyPolicy(state)
